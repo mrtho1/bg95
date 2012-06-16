@@ -1,0 +1,46 @@
+awsAccessKey: AKIAILNLXEYMK3N3DJPQ
+awsSecretKey: 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
+s3CacheBucket: bg95.data.thompson234.com
+localCacheRoot: C:\temp\
+
+http:
+    rootPath: /api/*
+
+# Logging settings.
+logging:
+
+  # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.
+  level: INFO
+
+  # Logger-specific levels.
+  loggers:
+
+    com.thompson234.bg95: DEBUG
+
+  # Settings for logging to stdout.
+  console:
+
+    # If true, write log statements to stdout.
+    enabled: true
+
+    # Do not display log statements below this threshold to stdout.
+    threshold: DEBUG
+
+  # Settings for logging to a file.
+  file:
+
+    # If true, write log statements to a file.
+    enabled: true
+
+    # Do not write log statements below this threshold to the file.
+    threshold: ALL
+
+    # The file to which statements will be logged.
+    currentLogFilename: ./logs/bg95.log
+
+    #  When the log file rolls over, the file will be archived to example-2012-03-15.log.gz,
+    # example.log will be truncated, and new statements written to it.
+    archivedLogFilenamePattern: ./logs/bg95-%d.log.gz
+
+    # The maximum number of log files to archive.
+    archivedFileCount: 5
