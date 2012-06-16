@@ -100,12 +100,39 @@ public class Bg95Module extends AbstractModule {
     }
 
     @Provides
+    @Named("modelDeepWrites")
+    public boolean modelDeepWrites() {
+        return _configuration.isModelDeepWrites();
+    }
+
+    @Provides
+    @Named("modelPropagateLoadedContent")
+    public boolean modelPropagateLoadedContent() {
+        return _configuration.isModelPropagateLoadedContent();
+    }
+
+    @Provides
+    @Named("httpDeepWrites")
+    public boolean httpDeepWrites() {
+        return _configuration.isHttpDeepWrites();
+    }
+
+    @Provides
+    @Named("httpPropagateLoadedContent")
+    public boolean httpPropagateLoadedContent() {
+        return _configuration.isHttpPropagateLoadedContent();
+    }
+
+    @Provides
     @Named("modelContentManager")
     public ContentManagerRW modelContentManager(@Named("modelLocalFileContentManager") ContentManager localContentManager,
-                                                @Named("modelS3ContentManager") ContentManager s3ContentManager) {
+                                                @Named("modelS3ContentManager") ContentManager s3ContentManager,
+                                                @Named("modelDeepWrites") boolean deepWrites,
+                                                @Named("modelPropagateLoadedContent") boolean propagateLoadedContent) {
 
         final ContentManagerChain chain = new ContentManagerChain(localContentManager, s3ContentManager);
-        chain.setDeepWrites(true);
+        chain.setDeepWrites(deepWrites);
+        chain.setPropagateLoadedContent(propagateLoadedContent);
         return chain;
     }
 
@@ -129,9 +156,13 @@ public class Bg95Module extends AbstractModule {
     @Named("httpContentContentManager")
     public ContentManager httpContentContentManager(@Named("httpLocalFileContentManager") ContentManager localContentManager,
                                                     @Named("httpS3ContentManager") ContentManager s3ContentManager,
-                                                    HttpContentManager httpContentManager) {
+                                                    HttpContentManager httpContentManager,
+                                                    @Named("httpDeepWrites") boolean deepWrites,
+                                                    @Named("httpPropagateLoadedContent") boolean propagateLoadedContent) {
 
         final ContentManagerChain chain = new ContentManagerChain(localContentManager, s3ContentManager, httpContentManager);
+        chain.setDeepWrites(deepWrites);
+        chain.setPropagateLoadedContent(propagateLoadedContent);
         return chain;
     }
 

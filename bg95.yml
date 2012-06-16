@@ -2,6 +2,10 @@ awsAccessKey: AKIAILNLXEYMK3N3DJPQ
 awsSecretKey: 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
 s3CacheBucket: bg95.data.thompson234.com
 localCacheRoot: C:\temp\
+modelDeepWrites: true
+modelPropagateLoadedContent: false
+httpDeepWrites: false
+httpPropagateLoadedContent: false
 
 http:
     rootPath: /api/*

@@ -1,4 +1,6 @@
 target
+cache-temp
+logs
 *.class
 *.jar
 *.war

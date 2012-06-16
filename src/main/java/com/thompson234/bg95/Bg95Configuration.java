@@ -39,6 +39,18 @@ public class Bg95Configuration extends Configuration {
     @JsonProperty("cacheNice")
     private long _cacheNice = 10 * 1000;
 
+    @JsonProperty("modelDeepWrites")
+    private boolean _modelDeepWrites;
+
+    @JsonProperty("modelPropagateLoadedContent")
+    private boolean _modelPropagateLoadedContent;
+
+    @JsonProperty("httpDeepWrites")
+    private boolean _httpDeepWrites;
+
+    @JsonProperty("httpPropagateLoadedContent")
+    private boolean _httpPropagateLoadedContent;
+
     @JsonIgnore
     private Injector _injector;
 
@@ -72,6 +84,22 @@ public class Bg95Configuration extends Configuration {
 
     public String getHttpCacheName() {
         return _httpCacheName;
+    }
+
+    public boolean isModelDeepWrites() {
+        return _modelDeepWrites;
+    }
+
+    public boolean isModelPropagateLoadedContent() {
+        return _modelPropagateLoadedContent;
+    }
+
+    public boolean isHttpDeepWrites() {
+        return _httpDeepWrites;
+    }
+
+    public boolean isHttpPropagateLoadedContent() {
+        return _httpPropagateLoadedContent;
     }
 
     public AircraftDao getAircraftDao() {
