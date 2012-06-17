@@ -193,7 +193,7 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
             {{#each content.sorties}}
                 <tr>
                     <td><i class="icon-plane"></i> <strong>{{aircraft.number}}</strong></td>
-                    <td colspan="2"><strong>{{join aircraft.names}}</strong></td>
+                    <td colspan="3"><strong>{{join aircraft.names}}</strong></td>
                 </tr>
                 {{#each crewAssignments}}
                     <tr>
@@ -222,6 +222,15 @@ chromium.org/developers/how-tos/chrome-frame-getting-started -->
                             {{role}}
                             {{#if isPilot}}
                                 </strong>
+                            {{/if}}
+                        </td>
+                        <td>
+                            {{#if isPilot}}
+                            <strong>
+                                {{/if}}
+                                {{status}}
+                                {{#if isPilot}}
+                            </strong>
                             {{/if}}
                         </td>
                     </tr>

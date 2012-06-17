@@ -130,6 +130,7 @@ Bg95App.Airman = Em.Object.extend({
 Bg95App.CrewAssignment = Em.Object.extend({
     airman: null,
     role: null,
+    status: null,
 
     init: function() {
         this._super();
