@@ -10,6 +10,7 @@ import com.thompson234.bg95.resource.AirmanResource;
 import com.thompson234.bg95.resource.CountResource;
 import com.thompson234.bg95.resource.MissionResource;
 import com.thompson234.bg95.resource.SearchResource;
+import com.thompson234.bg95.web.IndexFilter;
 import com.yammer.dropwizard.Service;
 import com.yammer.dropwizard.bundles.AssetsBundle;
 import com.yammer.dropwizard.config.Environment;
@@ -31,6 +32,8 @@ public class Bg95Service extends Service<Bg95Configuration> {
 
     @Override
     protected void initialize(Bg95Configuration configuration, Environment environment) throws Exception {
+
+        environment.addFilter(new IndexFilter(), "/*");
 
         environment.addHealthCheck(new DaoHealthCheck(configuration.getAirmanDao(),
                                                       configuration.getAircraftDao(),
