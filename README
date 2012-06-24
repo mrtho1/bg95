@@ -2,8 +2,7 @@ Site designed to facilitate easier retrieval of information gathered from http:/
 
 Includes RESTful API to backend data [TODO: document API]
 
-All data was scraped from http://95thbg.org/95th_joomla in June, 2012.  It is stored in S3 so going back to source
-site is not necessary for rebuilding models.
+All data was scraped from http://95thbg.org/95th_joomla in June, 2012.  It is stored in S3 so going back to source site is not necessary for rebuilding models.
 
 External Libraries include:
 * Dropwizard
