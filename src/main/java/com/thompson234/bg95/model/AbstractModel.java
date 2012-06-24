@@ -11,6 +11,7 @@ import java.util.UUID;
 public abstract class AbstractModel<T extends Model> implements Model {
 
     protected static final String ID_SUMMARY = "id";
+    protected static final String TYPE_SUMMARY = "type";
 
     private boolean _idFrozen = false;
     private String _id;
@@ -89,6 +90,7 @@ public abstract class AbstractModel<T extends Model> implements Model {
     public Map<String, Object> summarize() {
         final Map<String, Object> summary = Maps.newHashMap();
         summary.put(ID_SUMMARY, getId());
+        summary.put(TYPE_SUMMARY, getClass().getSimpleName().toLowerCase());
 
         return summary;
     }
