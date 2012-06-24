@@ -29,6 +29,7 @@ public class SdbAircraftDaoImpl extends AbstractSdbModelDao<Aircraft> implements
     private static final String MODEL = "model";
     private static final String IMAGE_URL = "imageUrl";
 
+    private boolean _cacheLoaded = false;
     private Cache<String, Aircraft> _cache = CacheBuilder.newBuilder().initialCapacity(350).recordStats().build();
 
     @Inject
@@ -56,6 +57,21 @@ public class SdbAircraftDaoImpl extends AbstractSdbModelDao<Aircraft> implements
     @Override
     protected void cacheObject(Aircraft model) {
         _cache.put(model.getId(), model);
+    }
+
+    @Override
+    protected List<Aircraft> doFindAll() {
+
+        List<Aircraft> found = null;
+
+        if (_cacheLoaded) {
+            found = Lists.newArrayList(_cache.asMap().values());
+        } else {
+            found = super.doFindAll();
+            _cacheLoaded = true;
+        }
+
+        return found;
     }
 
     @Override

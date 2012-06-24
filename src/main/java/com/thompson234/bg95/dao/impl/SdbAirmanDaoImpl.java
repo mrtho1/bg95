@@ -11,6 +11,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Lists;
 import com.thompson234.bg95.dao.AirmanDao;
+import com.thompson234.bg95.model.Aircraft;
 import com.thompson234.bg95.model.Airman;
 import com.thompson234.bg95.model.Name;
 import com.thompson234.bg95.util.Utils;
@@ -30,6 +31,7 @@ public class SdbAirmanDaoImpl extends AbstractSdbModelDao<Airman> implements Air
     private static final String UNIT = "unit";
     private static final String IMAGE_URL = "imageUrl";
 
+    private boolean _cacheLoaded = false;
     private Cache<String, Airman> _cache = CacheBuilder.newBuilder().initialCapacity(8000).recordStats().build();
 
     @Inject
@@ -57,6 +59,21 @@ public class SdbAirmanDaoImpl extends AbstractSdbModelDao<Airman> implements Air
     @Override
     protected void cacheObject(Airman model) {
         _cache.put(model.getId(), model);
+    }
+
+    @Override
+    protected List<Airman> doFindAll() {
+
+        List<Airman> found = null;
+
+        if (_cacheLoaded) {
+            found = Lists.newArrayList(_cache.asMap().values());
+        } else {
+            found = super.doFindAll();
+            _cacheLoaded = true;
+        }
+
+        return found;
     }
 
     @Override

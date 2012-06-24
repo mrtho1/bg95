@@ -48,6 +48,7 @@ public class SdbMissionDaoImpl extends AbstractSdbModelDao<Mission> implements M
     private final AirmanDao _airmanDao;
     private final AircraftDao _aircraftDao;
 
+    private boolean _cacheLoaded = false;
     private Cache<String, Mission> _cache = CacheBuilder.newBuilder().initialCapacity(400).recordStats().build();
 
     @Inject
@@ -79,6 +80,21 @@ public class SdbMissionDaoImpl extends AbstractSdbModelDao<Mission> implements M
     @Override
     protected void cacheObject(Mission model) {
         _cache.put(model.getId(), model);
+    }
+
+    @Override
+    protected List<Mission> doFindAll() {
+
+        List<Mission> found = null;
+
+        if (_cacheLoaded) {
+            found = Lists.newArrayList(_cache.asMap().values());
+        } else {
+            found = super.doFindAll();
+            _cacheLoaded = true;
+        }
+
+        return found;
     }
 
     @Override
