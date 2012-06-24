@@ -8,13 +8,9 @@ import com.thompson234.bg95.dao.AircraftDao;
 import com.thompson234.bg95.dao.AirmanDao;
 import com.thompson234.bg95.dao.MissionDao;
 import com.thompson234.bg95.model.Aircraft;
-import com.thompson234.bg95.model.AircraftSummary;
 import com.thompson234.bg95.model.Airman;
-import com.thompson234.bg95.model.AirmanSummary;
 import com.thompson234.bg95.model.Mission;
-import com.thompson234.bg95.model.MissionSummary;
 import com.thompson234.bg95.model.SearchResult;
-import com.thompson234.bg95.util.Utils;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.GET;
@@ -26,6 +22,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Path("/search")
@@ -62,7 +59,7 @@ public class SearchResource {
 
         final Set<Mission> missions = Sets.newHashSet();
         missions.addAll(_missionDao.findAllByDestinationLike(query));
-        for (Airman airman: airmen) {
+        for (Airman airman : airmen) {
             missions.addAll(_missionDao.findAllByAirman(airman));
         }
 
@@ -72,24 +69,24 @@ public class SearchResource {
         final List<Mission> missionResult = Lists.newArrayList(missions);
         Collections.sort(missionResult);
 
-        final List<AirmanSummary> airmanSummaries = Lists.transform(airmen, new Function<Airman, AirmanSummary>() {
+        final List<Map<String, Object>> airmanSummaries = Lists.transform(airmen, new Function<Airman, Map<String, Object>>() {
             @Override
-            public AirmanSummary apply(@Nullable Airman input) {
-                return input.getSummary();
+            public Map<String, Object> apply(@Nullable Airman input) {
+                return input.summarize();
             }
         });
 
-        final List<AircraftSummary> aircraftSummaries = Lists.transform(aircraftResult, new Function<Aircraft, AircraftSummary>() {
+        final List<Map<String, Object>> aircraftSummaries = Lists.transform(aircraftResult, new Function<Aircraft, Map<String, Object>>() {
             @Override
-            public AircraftSummary apply(@Nullable Aircraft input) {
-                return input.getSummary();
+            public Map<String, Object> apply(@Nullable Aircraft input) {
+                return input.summarize();
             }
         });
 
-        final List<MissionSummary> missionSummaries = Lists.transform(missionResult, new Function<Mission, MissionSummary>() {
+        final List<Map<String, Object>> missionSummaries = Lists.transform(missionResult, new Function<Mission, Map<String, Object>>() {
             @Override
-            public MissionSummary apply(@Nullable Mission input) {
-                return input.getSummary();
+            public Map<String, Object> apply(@Nullable Mission input) {
+                return input.summarize();
             }
         });
 

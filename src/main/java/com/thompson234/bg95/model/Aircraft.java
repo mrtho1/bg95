@@ -8,11 +8,13 @@ import com.google.common.collect.Sets;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @JsonAutoDetect
-public class Aircraft extends AbstractModel<Aircraft, AircraftSummary> implements Comparable<Aircraft> {
+public class Aircraft extends AbstractModel<Aircraft> implements Comparable<Aircraft> {
 
     private String _number;
     private List<String> _names = Lists.newArrayList();
@@ -42,12 +44,12 @@ public class Aircraft extends AbstractModel<Aircraft, AircraftSummary> implement
         return ImmutableList.copyOf(_names);
     }
 
-    public void setNames(List<String> names) {
+    public void setNames(Collection<String> names) {
         _names.clear();
         _names.addAll(names);
     }
 
-    public Aircraft names(List<String> names) {
+    public Aircraft names(Collection<String> names) {
         setNames(names);
         return this;
     }
@@ -61,12 +63,12 @@ public class Aircraft extends AbstractModel<Aircraft, AircraftSummary> implement
         return ImmutableSet.copyOf(_squadrons);
     }
 
-    public void setSquadrons(Set<String> squadrons) {
+    public void setSquadrons(Collection<String> squadrons) {
         _squadrons.clear();
         _squadrons.addAll(squadrons);
     }
 
-    public Aircraft squadrons(Set<String> squadrons) {
+    public Aircraft squadrons(Collection<String> squadrons) {
         setSquadrons(squadrons);
         return this;
     }
@@ -80,12 +82,12 @@ public class Aircraft extends AbstractModel<Aircraft, AircraftSummary> implement
         return ImmutableSet.copyOf(_callsigns);
     }
 
-    public void setCallsigns(Set<String> callsigns) {
+    public void setCallsigns(Collection<String> callsigns) {
         _callsigns.clear();
         _callsigns.addAll(callsigns);
     }
 
-    public Aircraft callsigns(Set<String> callsigns) {
+    public Aircraft callsigns(Collection<String> callsigns) {
         setCallsigns(callsigns);
         return this;
     }
@@ -117,12 +119,12 @@ public class Aircraft extends AbstractModel<Aircraft, AircraftSummary> implement
         return ImmutableSet.copyOf(_imageUrls);
     }
 
-    public void setImageUrls(Set<String> imageUrls) {
+    public void setImageUrls(Collection<String> imageUrls) {
         _imageUrls.clear();
         _imageUrls.addAll(imageUrls);
     }
 
-    public Aircraft imageUrls(Set<String> imageUrls) {
+    public Aircraft imageUrls(Collection<String> imageUrls) {
         setImageUrls(imageUrls);
         return this;
     }
@@ -140,11 +142,6 @@ public class Aircraft extends AbstractModel<Aircraft, AircraftSummary> implement
         }
 
         return _names.get(0);
-    }
-
-    @Override
-    protected AircraftSummary createSummary() {
-        return new AircraftSummary(this);
     }
 
     @Override
@@ -171,5 +168,14 @@ public class Aircraft extends AbstractModel<Aircraft, AircraftSummary> implement
         sanitizeStrings(_callsigns);
         sanitizeStrings(_squadrons);
         sanitizeStrings(_imageUrls);
+    }
+
+    @Override
+    public Map<String, Object> summarize() {
+        final Map<String, Object> summary = super.summarize();
+        summary.put("label", getNumber());
+        summary.put("names", getNames());
+
+        return summary;
     }
 }

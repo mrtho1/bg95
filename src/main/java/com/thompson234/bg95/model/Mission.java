@@ -8,10 +8,11 @@ import com.google.common.collect.Sets;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.Set;
 
 @JsonAutoDetect
-public class Mission extends AbstractModel<Mission, MissionSummary> implements Comparable<Mission> {
+public class Mission extends AbstractModel<Mission> implements Comparable<Mission> {
 
     private static final char TOOK_OFF = 'T';
     private static final char COMPLETED = 'C';
@@ -157,11 +158,23 @@ public class Mission extends AbstractModel<Mission, MissionSummary> implements C
         return this;
     }
 
-    public Sortie getSortie(String aircraftNumber) {
+    public Sortie getSortieByNumber(String aircraftNumber) {
 
-        for (Sortie sortie: getSorties()) {
+        for (Sortie sortie : getSorties()) {
 
             if (sortie.getAircraft().getNumber().equals(aircraftNumber)) {
+                return sortie;
+            }
+        }
+
+        return null;
+    }
+
+    public Sortie getSortieById(String aircraftId) {
+
+        for (Sortie sortie : getSorties()) {
+
+            if (sortie.getAircraft().getId().equals(aircraftId)) {
                 return sortie;
             }
         }
@@ -173,7 +186,7 @@ public class Mission extends AbstractModel<Mission, MissionSummary> implements C
         if (!Strings.isNullOrEmpty(stats)) {
             String[] tokens = stats.split(" ");
 
-            for (String token: tokens) {
+            for (String token : tokens) {
                 if (token.length() < 2) {
                     throw new IllegalArgumentException(stats);
                 }
@@ -188,15 +201,20 @@ public class Mission extends AbstractModel<Mission, MissionSummary> implements C
                 char designator = token.charAt(token.length() - 1);
 
                 switch (designator) {
-                    case TOOK_OFF: tookOff(value);
+                    case TOOK_OFF:
+                        tookOff(value);
                         break;
-                    case COMPLETED: completed(value);
+                    case COMPLETED:
+                        completed(value);
                         break;
-                    case DAMAGED: damaged(value);
+                    case DAMAGED:
+                        damaged(value);
                         break;
-                    case LOST: lost(value);
+                    case LOST:
+                        lost(value);
                         break;
-                    case SALVAGED: salvaged(value);
+                    case SALVAGED:
+                        salvaged(value);
                         break;
                     default:
                         throw new IllegalArgumentException(stats);
@@ -205,11 +223,6 @@ public class Mission extends AbstractModel<Mission, MissionSummary> implements C
         }
 
         return this;
-    }
-
-    @Override
-    protected MissionSummary createSummary() {
-        return new MissionSummary(this);
     }
 
     @Override
@@ -236,5 +249,21 @@ public class Mission extends AbstractModel<Mission, MissionSummary> implements C
         } else {
             return 1;
         }
+    }
+
+    @Override
+    public Map<String, Object> summarize() {
+        final Map<String, Object> summary = super.summarize();
+        summary.put("label", getDestination());
+        summary.put("number", getNumber());
+        summary.put("date", getDate());
+        summary.put("tookOff", getTookOff());
+        summary.put("completed", getCompleted());
+        summary.put("damaged", getDamaged());
+        summary.put("lost", getLost());
+        summary.put("salvaged", getSalvaged());
+        summary.put("sortieCount", getSorties().size());
+
+        return summary;
     }
 }

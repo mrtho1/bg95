@@ -5,9 +5,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import com.sun.jersey.core.util.StringIgnoreCaseKeyComparator;
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.annotate.JsonIgnore;
 
 import java.util.List;
 import java.util.ListIterator;
@@ -16,49 +14,49 @@ public class Name implements Comparable<Name> {
 
     private static final ImmutableMap<String, String> SALUTATION_MAP =
             ImmutableMap.<String, String>builder().put("mr", "Mr.")
-            .put("mister", "Mr.")
-            .put("master", "Mr.")
-            .put("mrs", "Mrs.")
-            .put("miss", "Ms.")
-            .put("ms", "Ms.")
-            .put("dr", "Dr.")
-            .put("rev", "Rev.")
-            .put("fr", "Fr.").build();
+                    .put("mister", "Mr.")
+                    .put("master", "Mr.")
+                    .put("mrs", "Mrs.")
+                    .put("miss", "Ms.")
+                    .put("ms", "Ms.")
+                    .put("dr", "Dr.")
+                    .put("rev", "Rev.")
+                    .put("fr", "Fr.").build();
 
     private static final ImmutableMap<String, String> SUFFIX_MAP =
             ImmutableMap.<String, String>builder().put("i", "I")
-            .put("ii", "II")
-            .put("iii", "III")
-            .put("iv", "IV")
-            .put("v", "V")
-            .put("senior", "Senior")
-            .put("junior", "Junior")
-            .put("sr", "Sr.")
-            .put("jr", "Jr.")
-            .put("phd", "PhD")
-            .put("apr", "APR")
-            .put("rph", "RPh")
-            .put("pe", "PE")
-            .put("md", "MD")
-            .put("ma", "MA")
-            .put("dmd", "DMD")
-            .put("cme", "CME").build();
+                    .put("ii", "II")
+                    .put("iii", "III")
+                    .put("iv", "IV")
+                    .put("v", "V")
+                    .put("senior", "Senior")
+                    .put("junior", "Junior")
+                    .put("sr", "Sr.")
+                    .put("jr", "Jr.")
+                    .put("phd", "PhD")
+                    .put("apr", "APR")
+                    .put("rph", "RPh")
+                    .put("pe", "PE")
+                    .put("md", "MD")
+                    .put("ma", "MA")
+                    .put("dmd", "DMD")
+                    .put("cme", "CME").build();
 
     private static final ImmutableMap<String, String> COMPOUND_LAST_NAME_MAP =
             ImmutableMap.<String, String>builder().put("vere", "Vere")
-            .put("von", "Von")
-            .put("van", "Van")
-            .put("de", "De")
-            .put("del", "Del")
-            .put("della", "Della")
-            .put("di", "Di")
-            .put("da", "Da")
-            .put("pietro", "Pietro")
-            .put("vanden", "Vanden")
-            .put("du", "Du")
-            .put("st", "St.")
-            .put("la", "La")
-            .put("ter", "Ter").build();
+                    .put("von", "Von")
+                    .put("van", "Van")
+                    .put("de", "De")
+                    .put("del", "Del")
+                    .put("della", "Della")
+                    .put("di", "Di")
+                    .put("da", "Da")
+                    .put("pietro", "Pietro")
+                    .put("vanden", "Vanden")
+                    .put("du", "Du")
+                    .put("st", "St.")
+                    .put("la", "La")
+                    .put("ter", "Ter").build();
 
     private static final String NMI = "(NMI)";
     private static final String FNU = "(FNU)";
@@ -359,7 +357,7 @@ public class Name implements Comparable<Name> {
         final String rhsFirstName = Strings.nullToEmpty(rhs.getFirstName());
 
         if ((ignoreCase && !StringUtils.equalsIgnoreCase(lhsFirstName, rhsFirstName)) ||
-            !StringUtils.equals(lhsFirstName, rhsFirstName)) {
+                !StringUtils.equals(lhsFirstName, rhsFirstName)) {
             return false;
         }
 
@@ -367,7 +365,7 @@ public class Name implements Comparable<Name> {
         final String rhsMiddle = Strings.nullToEmpty(rhs.getMiddle());
 
         if ((ignoreCase && StringUtils.equalsIgnoreCase(lhsMiddle, rhsMiddle)) ||
-            StringUtils.equals(lhsMiddle, rhsMiddle)) {
+                StringUtils.equals(lhsMiddle, rhsMiddle)) {
             return true;
         }
 
@@ -386,7 +384,7 @@ public class Name implements Comparable<Name> {
             fullMiddle = lhsMiddle;
         }
 
-        if  (mi != null && fullMiddle != null && fullMiddle.startsWith(mi)) {
+        if (mi != null && fullMiddle != null && fullMiddle.startsWith(mi)) {
             return true;
         }
 

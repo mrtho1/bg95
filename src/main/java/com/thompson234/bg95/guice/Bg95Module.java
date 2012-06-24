@@ -3,6 +3,7 @@ package com.thompson234.bg95.guice;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.simpledb.AmazonSimpleDBClient;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
@@ -16,9 +17,9 @@ import com.thompson234.bg95.content.S3ContentManager;
 import com.thompson234.bg95.dao.AircraftDao;
 import com.thompson234.bg95.dao.AirmanDao;
 import com.thompson234.bg95.dao.MissionDao;
-import com.thompson234.bg95.dao.impl.AircraftDaoImpl;
-import com.thompson234.bg95.dao.impl.AirmanDaoImpl;
-import com.thompson234.bg95.dao.impl.MissionDaoImpl;
+import com.thompson234.bg95.dao.impl.SdbAircraftDaoImpl;
+import com.thompson234.bg95.dao.impl.SdbAirmanDaoImpl;
+import com.thompson234.bg95.dao.impl.SdbMissionDaoImpl;
 import com.thompson234.bg95.service.HttpHarvester;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.SerializationConfig;
@@ -36,9 +37,9 @@ public class Bg95Module extends AbstractModule {
     @Override
     protected void configure() {
 
-        bind(AircraftDao.class).to(AircraftDaoImpl.class).in(Singleton.class);
-        bind(AirmanDao.class).to(AirmanDaoImpl.class).in(Singleton.class);
-        bind(MissionDao.class).to(MissionDaoImpl.class).in(Singleton.class);
+        bind(AircraftDao.class).to(SdbAircraftDaoImpl.class).in(Singleton.class);
+        bind(AirmanDao.class).to(SdbAirmanDaoImpl.class).in(Singleton.class);
+        bind(MissionDao.class).to(SdbMissionDaoImpl.class).in(Singleton.class);
         bind(HttpHarvester.class).in(Singleton.class);
         bind(HttpContentManager.class).in(Singleton.class);
     }
@@ -48,6 +49,11 @@ public class Bg95Module extends AbstractModule {
                                          @Named("awsSecretKey") String secretKey) {
 
         return new BasicAWSCredentials(accessKey, secretKey);
+    }
+
+    @Provides
+    public AmazonSimpleDBClient amazonSimpleDBClient(AWSCredentials credentials) {
+        return new AmazonSimpleDBClient(credentials);
     }
 
     @Provides
@@ -186,5 +192,67 @@ public class Bg95Module extends AbstractModule {
         s3ContentManager.setContentRoot(cacheRoot);
         s3ContentManager.setHashKeys(true);
         return s3ContentManager;
+    }
+
+    @Provides
+    @Named("domain.airman.name")
+    public String airmanDomain() {
+        return _configuration.getAirmanDomain();
+    }
+
+    @Provides
+    @Named("domain.aircraft.name")
+    public String aircraftDomain() {
+        return _configuration.getAircraftDomain();
+    }
+
+    @Provides
+    @Named("domain.mission.name")
+    public String missionDomain() {
+        return _configuration.getMissionDomain();
+    }
+
+    public boolean forceDomainReset() {
+        return false;
+    }
+
+    public boolean preCache() {
+        return true;
+    }
+
+    @Provides
+    @Named("domain.aircraft.forceReset")
+    public boolean domainAircraftForceReset() {
+        return forceDomainReset();
+    }
+
+    @Provides
+    @Named("domain.airman.forceReset")
+    public boolean domainAirmanForceReset() {
+        return forceDomainReset();
+    }
+
+    @Provides
+    @Named("domain.mission.forceReset")
+    public boolean domainMissionForceReset() {
+        return forceDomainReset();
+    }
+
+    @Provides
+    @Named("domain.aircraft.preCache")
+    public boolean domainAircraftPreCache() {
+        return preCache();
+    }
+
+    @Provides
+    @Named("domain.airman.preCache")
+    public boolean domainAirmanPreCache() {
+        return preCache();
+    }
+
+    @Provides
+    @Named("domain.mission.preCache")
+    public boolean domainMissionPreCache() {
+        return preCache();
     }
 }

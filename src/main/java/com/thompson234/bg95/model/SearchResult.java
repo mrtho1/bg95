@@ -4,13 +4,14 @@ import com.google.common.collect.Lists;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public class SearchResult {
 
     private String _query;
-    private List<AirmanSummary> _airmen = Lists.newArrayList();
-    private List<AircraftSummary> _aircraft = Lists.newArrayList();
-    private List<MissionSummary> _missions = Lists.newArrayList();
+    private List<Map<String, Object>> _airmen = Lists.newArrayList();
+    private List<Map<String, Object>> _aircraft = Lists.newArrayList();
+    private List<Map<String, Object>> _missions = Lists.newArrayList();
 
     public SearchResult() {
     }
@@ -32,59 +33,59 @@ public class SearchResult {
         return this;
     }
 
-    public List<AirmanSummary> getAirmen() {
+    public List<Map<String, Object>> getAirmen() {
         return _airmen;
     }
 
-    public void setAirmen(Collection<AirmanSummary> airmen) {
+    public void setAirmen(Collection<Map<String, Object>> airmen) {
         _airmen.clear();
         _airmen.addAll(airmen);
     }
 
-    public SearchResult airmen(Collection<AirmanSummary> airmen) {
+    public SearchResult airmen(Collection<Map<String, Object>> airmen) {
         setAirmen(airmen);
         return this;
     }
 
-    public SearchResult airman(AirmanSummary airman) {
+    public SearchResult airman(Map<String, Object> airman) {
         _airmen.add(airman);
         return this;
     }
 
-    public List<AircraftSummary> getAircraft() {
+    public List<Map<String, Object>> getAircraft() {
         return _aircraft;
     }
 
-    public void setAircraft(Collection<AircraftSummary> aircraft) {
+    public void setAircraft(Collection<Map<String, Object>> aircraft) {
         _aircraft.clear();
         _aircraft.addAll(aircraft);
     }
 
-    public SearchResult aircraft(Collection<AircraftSummary> aircraft) {
+    public SearchResult aircraft(Collection<Map<String, Object>> aircraft) {
         setAircraft(aircraft);
         return this;
     }
 
-    public SearchResult aircraft(AircraftSummary aircraft) {
+    public SearchResult aircraft(Map<String, Object> aircraft) {
         _aircraft.add(aircraft);
         return this;
     }
 
-    public List<MissionSummary> getMissions() {
+    public List<Map<String, Object>> getMissions() {
         return _missions;
     }
 
-    public void setMissions(Collection<MissionSummary> missions) {
+    public void setMissions(Collection<Map<String, Object>> missions) {
         _missions.clear();
         _missions.addAll(missions);
     }
 
-    public SearchResult missions(Collection<MissionSummary> missions) {
+    public SearchResult missions(Collection<Map<String, Object>> missions) {
         setMissions(missions);
         return this;
     }
 
-    public SearchResult mission(MissionSummary mission) {
+    public SearchResult mission(Map<String, Object> mission) {
         _missions.add(mission);
         return this;
     }

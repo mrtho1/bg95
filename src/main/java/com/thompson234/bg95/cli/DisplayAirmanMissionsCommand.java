@@ -46,16 +46,16 @@ public class DisplayAirmanMissionsCommand extends ConfiguredCommand<Bg95Configur
         final Airman airman = configuration.getAirmanDao().findByFullName(params.getOptionValue("airman"));
         final List<Mission> missions = configuration.getMissionDao().findAllByAirman(airman);
 
-        for (Mission mission: missions) {
+        for (Mission mission : missions) {
             System.out.println(String.format("%1$d. %2$tm/%2$td/%2$tY - %3$s", mission.getNumber(), mission.getDate(), mission.getDestination()));
             System.out.println(String.format("%d Total Sorties %d Completed %d Damaged %d Lost %d Salvaged", mission.getTookOff(), mission.getCompleted(), mission.getDamaged(), mission.getLost(), mission.getSalvaged()));
             System.out.println("Sorties:");
 
             int sortieIndex = 1;
-            for (Sortie sortie: mission.getSorties()) {
+            for (Sortie sortie : mission.getSorties()) {
                 final ImmutableList<String> names = sortie.getAircraft().getNames();
                 final StringBuilder nameBuilder = new StringBuilder();
-                for (String name: sortie.getAircraft().getNames()) {
+                for (String name : sortie.getAircraft().getNames()) {
 
                     if (!Strings.isNullOrEmpty(name)) {
 
@@ -81,7 +81,7 @@ public class DisplayAirmanMissionsCommand extends ConfiguredCommand<Bg95Configur
                 });
 
                 int assignmentIndex = 1;
-                for (CrewAssignment assignment: sortedAssignments) {
+                for (CrewAssignment assignment : sortedAssignments) {
                     System.out.println(String.format("\t\t%d. %s [%s] - %s\t%s",
                             assignmentIndex,
                             assignment.getAirman().getFullName(),

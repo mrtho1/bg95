@@ -24,7 +24,6 @@ import com.thompson234.bg95.model.Name;
 import com.thompson234.bg95.model.Sortie;
 import com.thompson234.bg95.util.Utils;
 import com.yammer.dropwizard.logging.Log;
-import org.apache.commons.lang3.StringUtils;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
 
@@ -75,7 +74,7 @@ public class HttpHarvester {
     private Multimap<String, String> _aircraftImageUrlMap = HashMultimap.create();
 
     @Inject
-    public HttpHarvester(@Named("httpContentContentManager")ContentManager httpContentManager,
+    public HttpHarvester(@Named("httpContentContentManager") ContentManager httpContentManager,
                          AircraftDao aircraftDao,
                          AirmanDao airmanDao,
                          MissionDao missionDao) {
@@ -145,17 +144,17 @@ public class HttpHarvester {
 
     private void harvestAircraftImageUrls() {
 
-        for (String url: AIRCRAFT_IMAGE_URLS) {
+        for (String url : AIRCRAFT_IMAGE_URLS) {
 
             final TagNode root = cleanHtml(loadHtml(url));
             final ImmutableList<TagNode> preNodes = Utils.selectAllNodes(root, "//div[@class='article']//pre");
 
-            for (TagNode pre: preNodes) {
+            for (TagNode pre : preNodes) {
                 final String aircraftNumber = Utils.sanitizeSpaces(pre.getText().toString()).split(" ")[0].trim();
 
                 final ImmutableList<TagNode> anchors = Utils.selectAllNodes(pre, "//a");
 
-                for (TagNode anchor: anchors) {
+                for (TagNode anchor : anchors) {
 
                     final String originalHref = anchor.getAttributeByName("href");
                     String href = originalHref;
@@ -184,7 +183,7 @@ public class HttpHarvester {
 
                         final ImmutableList<TagNode> imgNodes = Utils.selectAllNodes(infoRoot, "//img");
 
-                        for (TagNode img: imgNodes) {
+                        for (TagNode img : imgNodes) {
                             final String alt = img.getAttributeByName("alt");
 
                             if (HOME_ALT.equals(alt)) {
@@ -209,7 +208,7 @@ public class HttpHarvester {
 
         final ImmutableList<TagNode> anchors = Utils.selectAllNodes(root, "//div[@class='article']//a");
 
-        for (TagNode anchor: anchors) {
+        for (TagNode anchor : anchors) {
             //Case 1:Abwender, Don 2............334th Sqn
             //Case 2:Bek, Thomas, G  1............412th Sqn
             //Case 3:Ross, J.R..........................336th Sqn
@@ -249,7 +248,7 @@ public class HttpHarvester {
             //Case 5 should work, it won't produce a known name though.
             final Splitter splitter = Splitter.on(CharMatcher.anyOf(", ")).omitEmptyStrings().trimResults().limit(2);
             final List<String> tokens = Lists.newArrayList();
-            for (String token: splitter.split(pilotNameText)) {
+            for (String token : splitter.split(pilotNameText)) {
                 tokens.add(0, token);
             }
 
@@ -268,7 +267,7 @@ public class HttpHarvester {
 
             if (airman == null) {
                 _sLog.debug("Could not find airman: {}", pilotName);
-                for (Map.Entry<Name, Airman> entry: _airmanCache.entrySet()) {
+                for (Map.Entry<Name, Airman> entry : _airmanCache.entrySet()) {
                     if (pilotName.softMatch(entry.getKey())) {
                         _sLog.debug("Using soft match {} for {}", entry.getKey(), pilotName);
                         airman = entry.getValue();
@@ -289,7 +288,7 @@ public class HttpHarvester {
 
         final DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
-        for (TagNode row: dataRows) {
+        for (TagNode row : dataRows) {
             final ImmutableList<String> fields = Utils.selectAllStrings(row, "//td/text()");
 
             try {
@@ -313,7 +312,7 @@ public class HttpHarvester {
 
             final ImmutableList<TagNode> dataRows = Utils.selectAllNodes(root, "//tr[position() > 1]");
 
-            for (TagNode row: dataRows) {
+            for (TagNode row : dataRows) {
 
                 final ImmutableList<String> fields = Utils.selectAllStrings(row, "//td/text()");
                 final String nameText = fields.get(0);
@@ -348,7 +347,7 @@ public class HttpHarvester {
                 _sLog.debug("Could not find aircraft {}", aircraftId);
             }
 
-            for (TagNode row: dataRows) {
+            for (TagNode row : dataRows) {
                 final ImmutableList<String> fields = Utils.selectAllStrings(row, "//td/text()");
                 final AircraftNumber candidateSn = new AircraftNumber(fields.get(0));
                 if (!serialNumber.equals(candidateSn)) {
@@ -365,7 +364,7 @@ public class HttpHarvester {
 
             final Set<String> imageUrls = Sets.newHashSet();
             imageUrls.addAll(_aircraftImageUrlMap.get(aircraft.getNumber()));
-            for (String name: aircraft.getNames()) {
+            for (String name : aircraft.getNames()) {
                 imageUrls.addAll(_aircraftImageUrlMap.get(name));
             }
             aircraft.imageUrls(imageUrls);
@@ -384,7 +383,7 @@ public class HttpHarvester {
 
         _sLog.trace("Processing mission data for {}", airman.getFullName());
 
-        for (TagNode row: dataRows) {
+        for (TagNode row : dataRows) {
 
             final ImmutableList<String> fields = Utils.selectAllStrings(row, "//td/text()");
             final int missionNumber = Integer.parseInt(fields.get(1));
@@ -409,7 +408,7 @@ public class HttpHarvester {
                 continue;
             }
 
-            Sortie sortie = mission.getSortie(aircraft.getNumber());
+            Sortie sortie = mission.getSortieByNumber(aircraft.getNumber());
 
             if (sortie == null) {
                 sortie = new Sortie().aircraft(aircraft);
@@ -423,18 +422,18 @@ public class HttpHarvester {
 
     private void extrapolateCrewImageUrls() {
 
-        for (Mission mission: _missionCache.values()) {
-            for (Sortie sortie: mission.getSorties()) {
+        for (Mission mission : _missionCache.values()) {
+            for (Sortie sortie : mission.getSorties()) {
 
-                final Airman pilot = sortie.findCrewByRole("pilot");
+                final Airman pilot = sortie.getCrewByRole("pilot");
 
                 if (pilot != null) {
 
-                    for (Airman crew: sortie.getFlightCrew()) {
+                    for (Airman crew : sortie.getFlightCrew()) {
 
                         if (!crew.equals(pilot)) {
 
-                            for (String imageUrl: pilot.getImageUrls()) {
+                            for (String imageUrl : pilot.getImageUrls()) {
                                 crew.imageUrl(imageUrl);
                             }
                         }
@@ -454,7 +453,7 @@ public class HttpHarvester {
         harvestFlightCrewImageUrls();
 
         harvestMissions();
-        for (Airman airman: _airmanCache.values()) {
+        for (Airman airman : _airmanCache.values()) {
             harvestAirmanMissions(airman);
         }
 

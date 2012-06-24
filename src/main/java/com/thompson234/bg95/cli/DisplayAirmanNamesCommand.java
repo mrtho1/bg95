@@ -17,7 +17,7 @@ public class DisplayAirmanNamesCommand extends ConfiguredCommand<Bg95Configurati
                        Bg95Configuration configuration,
                        CommandLine params) throws Exception {
 
-        for (Airman airman: configuration.getAirmanDao().findAll()) {
+        for (Airman airman : configuration.getAirmanDao().findAll()) {
             System.out.println(airman.getFullName());
         }
     }

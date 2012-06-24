@@ -6,6 +6,7 @@ import com.google.common.collect.Sets;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+import java.util.Collection;
 import java.util.Set;
 
 @JsonAutoDetect
@@ -35,12 +36,12 @@ public class Sortie {
         return ImmutableSet.copyOf(_crewAssignments);
     }
 
-    public void setCrewAssignments(Set<CrewAssignment> crewAssignments) {
+    public void setCrewAssignments(Collection<CrewAssignment> crewAssignments) {
         _crewAssignments.clear();
         _crewAssignments.addAll(crewAssignments);
     }
 
-    public Sortie crewAssignments(Set<CrewAssignment> crewAssignments) {
+    public Sortie crewAssignments(Collection<CrewAssignment> crewAssignments) {
         setCrewAssignments(crewAssignments);
         return this;
     }
@@ -50,11 +51,22 @@ public class Sortie {
         return this;
     }
 
-    public Airman findCrewByRole(String role) {
+    public Airman getCrewByRole(String role) {
 
-        for (CrewAssignment crewAssignment: getCrewAssignments()) {
+        for (CrewAssignment crewAssignment : getCrewAssignments()) {
             if (crewAssignment.getRole().equalsIgnoreCase(role)) {
                 return crewAssignment.getAirman();
+            }
+        }
+
+        return null;
+    }
+
+    public CrewAssignment getCrewAssignmentByAirmanId(String airmanId) {
+        for (CrewAssignment ca : getCrewAssignments()) {
+
+            if (ca.getAirman().getId().equals(airmanId)) {
+                return ca;
             }
         }
 
@@ -65,7 +77,7 @@ public class Sortie {
     public ImmutableSet<Airman> getFlightCrew() {
 
         final ImmutableSet.Builder<Airman> builder = ImmutableSet.<Airman>builder();
-        for (CrewAssignment crewAssignment: getCrewAssignments()) {
+        for (CrewAssignment crewAssignment : getCrewAssignments()) {
             builder.add(crewAssignment.getAirman());
         }
 

@@ -8,7 +8,6 @@ import com.thompson234.bg95.model.Airman;
 import com.thompson234.bg95.model.Mission;
 import com.yammer.metrics.core.HealthCheck;
 
-import javax.swing.*;
 import java.util.List;
 
 public class DaoHealthCheck extends HealthCheck {

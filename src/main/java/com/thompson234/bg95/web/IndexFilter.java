@@ -19,14 +19,14 @@ public class IndexFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-            final HttpServletRequest httpRequest = (HttpServletRequest) request;
-            final String path = httpRequest.getPathInfo();
+        final HttpServletRequest httpRequest = (HttpServletRequest) request;
+        final String path = httpRequest.getPathInfo();
 
-            if (path != null && path.endsWith("/")) {
-                request.getRequestDispatcher(path + "index.html").forward(request, response);
-            } else {
-                chain.doFilter(request, response);
-            }
+        if (path != null && path.endsWith("/")) {
+            request.getRequestDispatcher(path + "index.html").forward(request, response);
+        } else {
+            chain.doFilter(request, response);
+        }
     }
 
     @Override

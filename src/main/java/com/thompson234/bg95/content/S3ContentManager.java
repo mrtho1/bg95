@@ -61,7 +61,7 @@ public class S3ContentManager implements ContentManagerRW {
         final ObjectMetadata metadata = new ObjectMetadata();
         metadata.addUserMetadata("bg95.key", key);
 
-        for (String metaKey: meta.keySet()) {
+        for (String metaKey : meta.keySet()) {
             metadata.addUserMetadata(metaKey, meta.get(metaKey));
         }
 

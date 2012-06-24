@@ -1,18 +1,14 @@
 package com.thompson234.bg95.util;
 
 import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.simpledb.model.ReplaceableAttribute;
 import com.amazonaws.util.Md5Utils;
 import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.io.ByteStreams;
-import com.thompson234.bg95.model.Model;
-import com.thompson234.bg95.model.ModelSummary;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.htmlcleaner.TagNode;
@@ -22,6 +18,7 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.net.URLEncoder;
+import java.util.Collection;
 import java.util.List;
 
 public final class Utils {
@@ -95,7 +92,7 @@ public final class Utils {
         final ImmutableList<Object> rawNodes = selectAll(root, xpath);
         final ImmutableList.Builder<TagNode> builder = new ImmutableList.Builder<TagNode>();
 
-        for (Object raw: rawNodes) {
+        for (Object raw : rawNodes) {
             builder.add((TagNode) raw);
         }
 
@@ -137,7 +134,7 @@ public final class Utils {
         final ImmutableList<Object> rawNodes = selectAll(root, xpath);
         final ImmutableList.Builder<String> builder = new ImmutableList.Builder<String>();
 
-        for (Object raw: rawNodes) {
+        for (Object raw : rawNodes) {
 
             String value = raw.toString();
 
@@ -203,13 +200,22 @@ public final class Utils {
         return StringUtils.stripAccents(toCaller);
     }
 
-//    public static<T extends ModelSummary> List<T> toSummary(List<Model<T>> model) {
-//
-//        return Lists.<Model<T>, T>transform(model, new Function<Model<T>, T>() {
-//            @Override
-//            public ModelSummary apply(@Nullable Model input) {
-//                return input.getSummary();
-//            }
-//        });
-//    }
+    public static List<ReplaceableAttribute> toReplaceableAttributes(final String name, Collection<String> values) {
+
+        return toReplaceableAttributes(name, Lists.newArrayList(values));
+    }
+
+    public static List<ReplaceableAttribute> toReplaceableAttributes(final String name, List<String> values) {
+
+        return Lists.transform(values, new Function<String, ReplaceableAttribute>() {
+            boolean _replace = true;
+
+            @Override
+            public ReplaceableAttribute apply(@Nullable String value) {
+                final ReplaceableAttribute ra = new ReplaceableAttribute(name, value, _replace);
+                _replace = false;
+                return ra;
+            }
+        });
+    }
 }

@@ -1,9 +1,12 @@
 package com.thompson234.bg95.model;
 
-public interface Model<T extends ModelSummary> {
+import java.util.Map;
+
+public interface Model {
 
     public String getId();
-    public T getSummary();
+
+    public Map<String, Object> summarize();
 
     void sanitize();
 }

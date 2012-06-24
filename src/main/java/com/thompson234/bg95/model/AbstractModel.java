@@ -1,13 +1,16 @@
 package com.thompson234.bg95.model;
 
 import com.google.common.base.Strings;
-import org.codehaus.jackson.annotate.JsonIgnore;
+import com.google.common.collect.Maps;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.UUID;
 
-public abstract class AbstractModel<B extends Model, T extends ModelSummary> implements Model<T> {
+public abstract class AbstractModel<T extends Model> implements Model {
+
+    protected static final String ID_SUMMARY = "id";
 
     private boolean _idFrozen = false;
     private String _id;
@@ -45,27 +48,10 @@ public abstract class AbstractModel<B extends Model, T extends ModelSummary> imp
         return _idFrozen;
     }
 
-    public B id(String id) {
+    public T id(String id) {
         setId(id);
-        return (B) this;
+        return (T) this;
     }
-
-    @Override
-    @JsonIgnore
-    public synchronized T getSummary() {
-
-        if (_summary == null) {
-            _summary = createSummary();
-        }
-
-        return _summary;
-    }
-
-    protected synchronized void destroySummary() {
-        _summary = null;
-    }
-
-    protected abstract T createSummary();
 
     @Override
     public boolean equals(Object o) {
@@ -86,7 +72,7 @@ public abstract class AbstractModel<B extends Model, T extends ModelSummary> imp
 
     protected void sanitizeStrings(Collection<String> strings) {
 
-        for (Iterator<String> it = strings.iterator(); it.hasNext();) {
+        for (Iterator<String> it = strings.iterator(); it.hasNext(); ) {
 
             final String string = it.next();
 
@@ -97,5 +83,13 @@ public abstract class AbstractModel<B extends Model, T extends ModelSummary> imp
     }
 
     public void sanitize() {
+    }
+
+    @Override
+    public Map<String, Object> summarize() {
+        final Map<String, Object> summary = Maps.newHashMap();
+        summary.put(ID_SUMMARY, getId());
+
+        return summary;
     }
 }

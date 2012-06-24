@@ -6,6 +6,9 @@ import com.thompson234.bg95.dao.AircraftDao;
 import com.thompson234.bg95.dao.AirmanDao;
 import com.thompson234.bg95.dao.MissionDao;
 import com.thompson234.bg95.guice.Bg95Module;
+import com.thompson234.bg95.model.Aircraft;
+import com.thompson234.bg95.model.Airman;
+import com.thompson234.bg95.model.Mission;
 import com.thompson234.bg95.service.HttpHarvester;
 import com.yammer.dropwizard.config.Configuration;
 import org.codehaus.jackson.annotate.JsonIgnore;
@@ -50,6 +53,15 @@ public class Bg95Configuration extends Configuration {
 
     @JsonProperty("httpPropagateLoadedContent")
     private boolean _httpPropagateLoadedContent;
+
+    @JsonProperty("airmanDomain")
+    private String _airmanDomain = Airman.class.getSimpleName();
+
+    @JsonProperty("aircraftDomain")
+    private String _aircraftDomain = Aircraft.class.getSimpleName();
+
+    @JsonProperty("missionDomain")
+    private String _missionDomain = Mission.class.getSimpleName();
 
     @JsonIgnore
     private Injector _injector;
@@ -100,6 +112,18 @@ public class Bg95Configuration extends Configuration {
 
     public boolean isHttpPropagateLoadedContent() {
         return _httpPropagateLoadedContent;
+    }
+
+    public String getAirmanDomain() {
+        return _airmanDomain;
+    }
+
+    public String getAircraftDomain() {
+        return _aircraftDomain;
+    }
+
+    public String getMissionDomain() {
+        return _missionDomain;
     }
 
     public AircraftDao getAircraftDao() {

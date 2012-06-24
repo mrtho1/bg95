@@ -1,7 +1,6 @@
 package com.thompson234.bg95.model;
 
 import com.google.common.base.Objects;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -9,11 +8,13 @@ import com.google.common.collect.Sets;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @JsonAutoDetect
-public class Airman extends AbstractModel<Airman, AirmanSummary> implements Comparable<Airman> {
+public class Airman extends AbstractModel<Airman> implements Comparable<Airman> {
 
     private Name _name;
     private List<String> _ranks = Lists.newArrayList();
@@ -58,12 +59,12 @@ public class Airman extends AbstractModel<Airman, AirmanSummary> implements Comp
         return ImmutableList.copyOf(_ranks);
     }
 
-    public void setRanks(List<String> ranks) {
+    public void setRanks(Collection<String> ranks) {
         _ranks.clear();
         _ranks.addAll(ranks);
     }
 
-    public Airman ranks(List<String> ranks) {
+    public Airman ranks(Collection<String> ranks) {
         setRanks(ranks);
         return this;
     }
@@ -86,12 +87,12 @@ public class Airman extends AbstractModel<Airman, AirmanSummary> implements Comp
         return ImmutableSet.copyOf(_roles);
     }
 
-    public void setRoles(Set<String> roles) {
+    public void setRoles(Collection<String> roles) {
         _roles.clear();
         _roles.addAll(roles);
     }
 
-    public Airman roles(Set<String> roles) {
+    public Airman roles(Collection<String> roles) {
         setRoles(roles);
         return this;
     }
@@ -105,12 +106,12 @@ public class Airman extends AbstractModel<Airman, AirmanSummary> implements Comp
         return ImmutableSet.copyOf(_notes);
     }
 
-    public void setNotes(Set<String> notes) {
+    public void setNotes(Collection<String> notes) {
         _notes.clear();
         _notes.addAll(notes);
     }
 
-    public Airman notes(Set<String> notes) {
+    public Airman notes(Collection<String> notes) {
         setRoles(notes);
         return this;
     }
@@ -124,12 +125,12 @@ public class Airman extends AbstractModel<Airman, AirmanSummary> implements Comp
         return ImmutableSet.copyOf(_units);
     }
 
-    public void setUnits(Set<String> units) {
+    public void setUnits(Collection<String> units) {
         _units.clear();
         _units.addAll(units);
     }
 
-    public Airman units(Set<String> units) {
+    public Airman units(Collection<String> units) {
         setUnits(units);
         return this;
     }
@@ -143,12 +144,12 @@ public class Airman extends AbstractModel<Airman, AirmanSummary> implements Comp
         return ImmutableSet.copyOf(_imageUrls);
     }
 
-    public void setImageUrls(Set<String> imageUrls) {
+    public void setImageUrls(Collection<String> imageUrls) {
         _imageUrls.clear();
         _imageUrls.addAll(imageUrls);
     }
 
-    public Airman imageUrls(Set<String> imageUrls) {
+    public Airman imageUrls(Collection<String> imageUrls) {
         setImageUrls(imageUrls);
         return this;
     }
@@ -156,11 +157,6 @@ public class Airman extends AbstractModel<Airman, AirmanSummary> implements Comp
     public Airman imageUrl(String imageUrl) {
         _imageUrls.add(imageUrl);
         return this;
-    }
-
-    @Override
-    protected AirmanSummary createSummary() {
-        return new AirmanSummary(this);
     }
 
     @Override
@@ -192,5 +188,14 @@ public class Airman extends AbstractModel<Airman, AirmanSummary> implements Comp
         }
 
         return getFullName().compareTo(rhs.getFullName());
+    }
+
+    @Override
+    public Map<String, Object> summarize() {
+        final Map<String, Object> summary = super.summarize();
+        summary.put("label", getFullName());
+        summary.put("rank", getRank());
+
+        return summary;
     }
 }
