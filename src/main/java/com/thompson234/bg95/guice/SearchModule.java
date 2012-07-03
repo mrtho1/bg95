@@ -29,7 +29,13 @@ public class SearchModule extends AbstractModule {
     @Provides
     public Directory directory() {
         try {
-            return FSDirectory.open(new File(indexDir()));
+            final File indexDir = new File(indexDir());
+
+            if (!indexDir.exists()) {
+                indexDir.mkdirs();
+            }
+
+            return FSDirectory.open(indexDir);
         } catch (Exception ex) {
             throw Throwables.propagate(ex);
         }
