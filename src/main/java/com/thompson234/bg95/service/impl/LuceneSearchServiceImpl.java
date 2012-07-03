@@ -31,9 +31,11 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.util.Version;
+import org.joda.time.DateTime;
 
 import javax.inject.Inject;
 import java.io.IOException;
+import java.util.Date;
 import java.util.Set;
 
 public class LuceneSearchServiceImpl implements SearchService {
@@ -59,16 +61,26 @@ public class LuceneSearchServiceImpl implements SearchService {
         _missionDao = missionDao;
         _directory = directory;
 
+        checkBuildIndex();
+    }
+
+    private void checkBuildIndex() {
         try {
             if (!IndexReader.indexExists(_directory)) {
-                buildIndex();
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        _sLog.debug("buildIndex initiated from thread.");
+                        buildIndex();
+                    }
+                }).start();
             }
         } catch (Exception ex) {
             _sLog.error("Error creating search service.", ex);
             throw Throwables.propagate(ex);
         }
     }
-
     private synchronized IndexSearcher getIndexSearcher() {
         IndexReader reader = null;
 
@@ -162,6 +174,7 @@ public class LuceneSearchServiceImpl implements SearchService {
 
     @Override
     public void buildIndex() {
+        _sLog.debug("buildIndex starting at {}", DateTime.now());
 
         final IndexWriterConfig writerConfig =
                 new IndexWriterConfig(Version.LUCENE_36, new SimpleAnalyzer(Version.LUCENE_36));
@@ -181,6 +194,7 @@ public class LuceneSearchServiceImpl implements SearchService {
             throw Throwables.propagate(ex);
         } finally {
             IOUtils.closeQuietly(writer);
+            _sLog.debug("buildIndex finished at {}", DateTime.now());
         }
     }
 
