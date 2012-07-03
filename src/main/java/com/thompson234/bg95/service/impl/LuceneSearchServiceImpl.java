@@ -30,12 +30,9 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.TopScoreDocCollector;
 import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 
 import javax.inject.Inject;
-import javax.inject.Named;
-import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 
@@ -60,9 +57,12 @@ public class LuceneSearchServiceImpl implements SearchService {
         _aircraftDao = aircraftDao;
         _airmanDao = airmanDao;
         _missionDao = missionDao;
+        _directory = directory;
 
         try {
-            _directory = directory;
+            if (!IndexReader.indexExists(_directory)) {
+                buildIndex();
+            }
         } catch (Exception ex) {
             _sLog.error("Error creating search service.", ex);
             throw Throwables.propagate(ex);

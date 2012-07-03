@@ -1,8 +1,6 @@
 package com.thompson234.bg95.resource;
 
-import com.google.common.base.Function;
 import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.thompson234.bg95.dao.AircraftDao;
 import com.thompson234.bg95.dao.AirmanDao;
@@ -13,7 +11,6 @@ import com.thompson234.bg95.model.Mission;
 import com.thompson234.bg95.model.SearchResult;
 import com.thompson234.bg95.service.SearchService;
 
-import javax.annotation.Nullable;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;

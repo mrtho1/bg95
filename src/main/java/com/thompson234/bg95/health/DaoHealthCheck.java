@@ -1,6 +1,5 @@
 package com.thompson234.bg95.health;
 
-import com.google.common.collect.Collections2;
 import com.thompson234.bg95.dao.AircraftDao;
 import com.thompson234.bg95.dao.AirmanDao;
 import com.thompson234.bg95.dao.MissionDao;

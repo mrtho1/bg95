@@ -1,8 +1,5 @@
 package com.thompson234.bg95.health;
 
-import com.thompson234.bg95.model.Aircraft;
-import com.thompson234.bg95.model.Airman;
-import com.thompson234.bg95.model.Mission;
 import com.thompson234.bg95.model.Type;
 import com.yammer.metrics.core.HealthCheck;
 import org.apache.lucene.index.IndexReader;

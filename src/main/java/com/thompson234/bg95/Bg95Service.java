@@ -6,7 +6,6 @@ import com.thompson234.bg95.cli.DisplayAirmanMissionsCommand;
 import com.thompson234.bg95.cli.DisplayAirmanNamesCommand;
 import com.thompson234.bg95.cli.HarvestDataCommand;
 import com.thompson234.bg95.cli.ShowAllDataCommand;
-import com.thompson234.bg95.guice.JacksonModule;
 import com.thompson234.bg95.health.DaoHealthCheck;
 import com.thompson234.bg95.health.IndexHealthCheck;
 import com.thompson234.bg95.json.Bg95Json;
@@ -23,9 +22,7 @@ import com.yammer.dropwizard.Service;
 import com.yammer.dropwizard.bundles.AssetsBundle;
 import com.yammer.dropwizard.config.Environment;
 import com.yammer.dropwizard.json.Json;
-import org.codehaus.jackson.Version;
 import org.codehaus.jackson.map.Module;
-import org.codehaus.jackson.map.module.SimpleModule;
 
 public class Bg95Service extends Service<Bg95Configuration> {
 
