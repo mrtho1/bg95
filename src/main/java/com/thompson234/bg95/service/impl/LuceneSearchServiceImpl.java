@@ -63,7 +63,6 @@ public class LuceneSearchServiceImpl implements SearchService {
 
         try {
             _directory = directory;
-            _searcher = new IndexSearcher(IndexReader.open(_directory));
         } catch (Exception ex) {
             _sLog.error("Error creating search service.", ex);
             throw Throwables.propagate(ex);
@@ -71,17 +70,20 @@ public class LuceneSearchServiceImpl implements SearchService {
     }
 
     private synchronized IndexSearcher getIndexSearcher() {
-
         IndexReader reader = null;
 
         try {
-            reader = IndexReader.openIfChanged(_searcher.getIndexReader());
+            if (_searcher != null) {
+                reader = IndexReader.openIfChanged(_searcher.getIndexReader());
+            } else {
+                reader = IndexReader.open(_directory);
+            }
         } catch (Exception ex) {
             _sLog.error("Error obtaining reader for search.", ex);
             throw Throwables.propagate(ex);
         }
 
-        if (reader != null) {
+        if (reader != null || _searcher == null) {
             _searcher = new IndexSearcher(reader);
         }
 

@@ -7,8 +7,14 @@ import com.google.inject.Singleton;
 import com.thompson234.bg95.SearchConfiguration;
 import com.thompson234.bg95.service.SearchService;
 import com.thompson234.bg95.service.impl.LuceneSearchServiceImpl;
+import org.apache.commons.io.IOUtils;
+import org.apache.lucene.analysis.SimpleAnalyzer;
+import org.apache.lucene.index.IndexNotFoundException;
+import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.util.Version;
 
 import javax.inject.Named;
 import java.io.File;
@@ -29,13 +35,7 @@ public class SearchModule extends AbstractModule {
     @Provides
     public Directory directory() {
         try {
-            final File indexDir = new File(indexDir());
-
-            if (!indexDir.exists()) {
-                indexDir.mkdirs();
-            }
-
-            return FSDirectory.open(indexDir);
+            return FSDirectory.open(new File(indexDir()));
         } catch (Exception ex) {
             throw Throwables.propagate(ex);
         }
