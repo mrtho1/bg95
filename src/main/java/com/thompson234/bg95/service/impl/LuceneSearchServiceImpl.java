@@ -124,7 +124,7 @@ public class LuceneSearchServiceImpl implements SearchService {
                 final String id = doc.get("id");
                 final String type = doc.get("type");
 
-                if (Airman.class.getSimpleName().equals(type) && ids.add(id)) {
+                if (Type.AIRMAN.equals(type) && ids.add(id)) {
                     result.airmanId(id);
                     for (String missionId: Sets.difference(getCollectionIds(doc, "missionId"), ids)) {
                         result.missionId(missionId);
@@ -133,13 +133,13 @@ public class LuceneSearchServiceImpl implements SearchService {
                     for (String acId: Sets.difference(getCollectionIds(doc, "aircraftId"), ids)) {
                         result.aircraftId(acId);
                     }
-                } else if (Aircraft.class.getSimpleName().equals(type) && ids.add(id)) {
+                } else if (Type.AIRCRAFT.equals(type) && ids.add(id)) {
                     result.aircraftId(id);
 
                     for (String missionId: Sets.difference(getCollectionIds(doc, "missionId"), ids)) {
                         result.missionId(missionId);
                     }
-                } else if (Mission.class.getSimpleName().equals(type) && ids.add(id)) {
+                } else if (Type.MISSION.equals(type) && ids.add(id)) {
                     result.missionId(id);
 
                     for (String missionId: Sets.difference(getCollectionIds(doc, "aircraftId"), ids)) {
