@@ -5,12 +5,12 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.thompson234.bg95.json.Views;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonView;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @JsonAutoDetect
@@ -27,12 +27,16 @@ public class Airman extends AbstractModel<Airman> implements Comparable<Airman> 
         super(newId());
     }
 
-    @JsonIgnore
+    @JsonView(value = {Views.Summary.class})
+    public String getLabel() {
+        return getFullName();
+    }
+
+    @JsonView(value = {Views.Summary.class})
     public String getFullName() {
         return _name.getFullName();
     }
 
-    @JsonIgnore
     public void setFullName(String fullName) {
         _name = new Name(fullName);
     }
@@ -42,6 +46,7 @@ public class Airman extends AbstractModel<Airman> implements Comparable<Airman> 
         return this;
     }
 
+    @JsonView(value = {Views.Storage.class, Views.Detail.class})
     public Name getName() {
         return _name;
     }
@@ -55,6 +60,7 @@ public class Airman extends AbstractModel<Airman> implements Comparable<Airman> 
         return this;
     }
 
+    @JsonView(value = {Views.Storage.class, Views.Detail.class})
     public ImmutableList<String> getRanks() {
         return ImmutableList.copyOf(_ranks);
     }
@@ -74,7 +80,7 @@ public class Airman extends AbstractModel<Airman> implements Comparable<Airman> 
         return this;
     }
 
-    @JsonIgnore
+    @JsonView(value = {Views.Summary.class})
     public String getRank() {
         if (_ranks.isEmpty()) {
             return null;
@@ -83,6 +89,7 @@ public class Airman extends AbstractModel<Airman> implements Comparable<Airman> 
         return _ranks.get(_ranks.size() - 1);
     }
 
+    @JsonView(value = {Views.Storage.class, Views.Detail.class})
     public ImmutableSet<String> getRoles() {
         return ImmutableSet.copyOf(_roles);
     }
@@ -102,6 +109,7 @@ public class Airman extends AbstractModel<Airman> implements Comparable<Airman> 
         return this;
     }
 
+    @JsonView(value = {Views.Storage.class, Views.Detail.class})
     public ImmutableSet<String> getNotes() {
         return ImmutableSet.copyOf(_notes);
     }
@@ -121,6 +129,7 @@ public class Airman extends AbstractModel<Airman> implements Comparable<Airman> 
         return this;
     }
 
+    @JsonView(value = {Views.Storage.class, Views.Detail.class})
     public ImmutableSet<String> getUnits() {
         return ImmutableSet.copyOf(_units);
     }
@@ -140,6 +149,7 @@ public class Airman extends AbstractModel<Airman> implements Comparable<Airman> 
         return this;
     }
 
+    @JsonView(value = {Views.Storage.class, Views.Detail.class})
     public ImmutableSet<String> getImageUrls() {
         return ImmutableSet.copyOf(_imageUrls);
     }
@@ -161,6 +171,7 @@ public class Airman extends AbstractModel<Airman> implements Comparable<Airman> 
 
     @Override
     public void sanitize() {
+        super.sanitize();
         sanitizeStrings(_ranks);
         sanitizeStrings(_units);
         sanitizeStrings(_roles);
@@ -188,14 +199,5 @@ public class Airman extends AbstractModel<Airman> implements Comparable<Airman> 
         }
 
         return getFullName().compareTo(rhs.getFullName());
-    }
-
-    @Override
-    public Map<String, Object> summarize() {
-        final Map<String, Object> summary = super.summarize();
-        summary.put("label", getFullName());
-        summary.put("rank", getRank());
-
-        return summary;
     }
 }

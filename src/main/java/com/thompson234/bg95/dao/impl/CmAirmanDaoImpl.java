@@ -19,7 +19,7 @@ public class CmAirmanDaoImpl extends AbstractCmModelDao<Airman> implements Airma
     private static final Log _sLog = Log.forClass(CmAirmanDaoImpl.class);
 
     @Inject
-    public CmAirmanDaoImpl(@Named("modelContentManager") ContentManagerRW contentManager,
+    public CmAirmanDaoImpl(@Named("contentManager.modelContentManager") ContentManagerRW contentManager,
                            ObjectMapper objectMapper) {
         super(contentManager, objectMapper);
     }

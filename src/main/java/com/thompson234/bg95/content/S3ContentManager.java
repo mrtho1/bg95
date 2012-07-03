@@ -5,11 +5,13 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.S3Object;
 import com.google.common.base.Strings;
 import com.thompson234.bg95.util.Utils;
+import com.yammer.dropwizard.logging.Log;
 
 import java.io.InputStream;
 import java.util.Map;
 
 public class S3ContentManager implements ContentManagerRW {
+    private static final Log _sLog = Log.forClass(S3ContentManager.class);
 
     private AmazonS3Client _s3Client;
     private String _bucket;
@@ -73,17 +75,23 @@ public class S3ContentManager implements ContentManagerRW {
             metadata.setContentType(meta.get(META_CONTENT_TYPE));
         }
 
-        _s3Client.putObject(_bucket, getS3Key(key), toStore, metadata);
+        final String s3Key = getS3Key(key);
+        _sLog.debug("Storing content {} to {}", s3Key, _bucket);
+        _s3Client.putObject(_bucket, s3Key, toStore, metadata);
     }
 
     @Override
     public InputStream load(String key) {
         final String s3Key = getS3Key(key);
 
+        _sLog.debug("Loading {}({}) from {}", key, s3Key, _bucket);
+
         try {
             final S3Object storedModels = _s3Client.getObject(_bucket, s3Key);
+            _sLog.debug("Successfully loaded {}({}) from {}", key, s3Key, _bucket);
             return storedModels.getObjectContent();
         } catch (Exception ex) {
+            _sLog.debug("Failed to load {}({}) from {}", key, s3Key, _bucket);
             return null;
         }
     }

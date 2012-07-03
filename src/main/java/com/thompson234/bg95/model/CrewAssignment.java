@@ -1,11 +1,14 @@
 package com.thompson234.bg95.model;
 
 import com.google.common.base.Objects;
+import com.thompson234.bg95.json.Views;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.map.annotate.JsonView;
 
 @JsonAutoDetect
 public class CrewAssignment {
 
+    private String _airmanId;
     private Airman _airman;
     private String _role;
     private String _status;
@@ -14,6 +17,16 @@ public class CrewAssignment {
 
     }
 
+    @JsonView(value = {Views.Storage.class})
+    public String getAirmanId() {
+        return (_airman != null) ? _airman.getId() : _airmanId;
+    }
+
+    public void setAirmanId(String airmanId) {
+        _airmanId = airmanId;
+    }
+
+    @JsonView(value = {Views.Detail.class})
     public Airman getAirman() {
         return _airman;
     }
@@ -27,6 +40,7 @@ public class CrewAssignment {
         return this;
     }
 
+    @JsonView(value = {Views.Storage.class, Views.Detail.class})
     public String getRole() {
         return _role;
     }
@@ -40,6 +54,7 @@ public class CrewAssignment {
         return this;
     }
 
+    @JsonView(value = {Views.Storage.class, Views.Detail.class})
     public String getStatus() {
         return _status;
     }

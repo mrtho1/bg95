@@ -3,7 +3,7 @@ package com.thompson234.bg95.resource;
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import com.google.common.collect.Maps;
 import com.thompson234.bg95.dao.AircraftDao;
 import com.thompson234.bg95.dao.AirmanDao;
 import com.thompson234.bg95.dao.MissionDao;
@@ -11,37 +11,43 @@ import com.thompson234.bg95.model.Aircraft;
 import com.thompson234.bg95.model.Airman;
 import com.thompson234.bg95.model.Mission;
 import com.thompson234.bg95.model.SearchResult;
+import com.thompson234.bg95.service.SearchService;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @Path("/search")
 @Produces(MediaType.APPLICATION_JSON)
 public class SearchResource {
 
-    private final AirmanDao _airmanDao;
+    private final SearchService _searchService;
     private final AircraftDao _aircraftDao;
+    private final AirmanDao _airmanDao;
     private final MissionDao _missionDao;
 
-    public SearchResource(AirmanDao airmanDao, AircraftDao aircraftDao, MissionDao missionDao) {
+    public SearchResource(SearchService searchService,
+                          AircraftDao aircraftDao,
+                          AirmanDao airmanDao,
+                          MissionDao missionDao) {
 
-        _airmanDao = airmanDao;
+        _searchService = searchService;
         _aircraftDao = aircraftDao;
+        _airmanDao = airmanDao;
         _missionDao = missionDao;
     }
 
     @GET
-    public SearchResult search(@QueryParam("q") String query) {
+    @Produces("text/x-json")
+    public Map<String, Object> search(@QueryParam("q") String query) {
 
         if (Strings.isNullOrEmpty(query)) {
             throw new WebApplicationException(Response.Status.BAD_REQUEST);
@@ -51,45 +57,23 @@ public class SearchResource {
             throw new WebApplicationException(Response.Status.PRECONDITION_FAILED);
         }
 
-        final List<Airman> airmen = _airmanDao.findAllByFullNameLike(query);
+        final SearchResult searchResult = _searchService.search(query);
+        final List<Airman> airmen = _airmanDao.findAllById(searchResult.getAirmenIds());
+        final List<Aircraft> aircraft = _aircraftDao.findAllById(searchResult.getAircraftIds());
+        final List<Mission> missions = _missionDao.findAllById(searchResult.getMissionIds());
 
-        final Set<Aircraft> aircraft = Sets.newHashSet();
-        aircraft.addAll(_aircraftDao.findAllByNameLike(query));
-        aircraft.addAll(_aircraftDao.findAllByNumberLike(query));
+        final Map<String, Object> result = Maps.newHashMap();
+        result.put("query", query);
+        result.put("airmen", airmen);
+        result.put("aircraft", aircraft);
+        result.put("missions", missions);
 
-        final Set<Mission> missions = Sets.newHashSet();
-        missions.addAll(_missionDao.findAllByDestinationLike(query));
-        for (Airman airman : airmen) {
-            missions.addAll(_missionDao.findAllByAirman(airman));
-        }
+        return result;
+    }
 
-        final List<Aircraft> aircraftResult = Lists.newArrayList(aircraft);
-        Collections.sort(aircraftResult);
-
-        final List<Mission> missionResult = Lists.newArrayList(missions);
-        Collections.sort(missionResult);
-
-        final List<Map<String, Object>> airmanSummaries = Lists.transform(airmen, new Function<Airman, Map<String, Object>>() {
-            @Override
-            public Map<String, Object> apply(@Nullable Airman input) {
-                return input.summarize();
-            }
-        });
-
-        final List<Map<String, Object>> aircraftSummaries = Lists.transform(aircraftResult, new Function<Aircraft, Map<String, Object>>() {
-            @Override
-            public Map<String, Object> apply(@Nullable Aircraft input) {
-                return input.summarize();
-            }
-        });
-
-        final List<Map<String, Object>> missionSummaries = Lists.transform(missionResult, new Function<Mission, Map<String, Object>>() {
-            @Override
-            public Map<String, Object> apply(@Nullable Mission input) {
-                return input.summarize();
-            }
-        });
-
-        return new SearchResult(query).airmen(airmanSummaries).aircraft(aircraftSummaries).missions(missionSummaries);
+    @POST
+    @Path("/build-index")
+    public void buildIndex() {
+        _searchService.buildIndex();
     }
 }

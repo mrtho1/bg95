@@ -11,7 +11,6 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Lists;
 import com.thompson234.bg95.dao.AirmanDao;
-import com.thompson234.bg95.model.Aircraft;
 import com.thompson234.bg95.model.Airman;
 import com.thompson234.bg95.model.Name;
 import com.thompson234.bg95.util.Utils;
@@ -36,9 +35,9 @@ public class SdbAirmanDaoImpl extends AbstractSdbModelDao<Airman> implements Air
 
     @Inject
     public SdbAirmanDaoImpl(AmazonSimpleDBClient client,
-                            @Named("domain.airman.name") String domainName,
-                            @Named("domain.airman.forceReset") boolean forceReset,
-                            @Named("domain.airman.preCache") boolean preCache) {
+                            @Named("aws.airmanDomain") String domainName,
+                            @Named("aws.forceAirmanDomainReset") boolean forceReset,
+                            @Named("dao.airmanDomainPreCache") boolean preCache) {
         super(client, domainName, forceReset);
 
         if (preCache) {

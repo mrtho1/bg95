@@ -1,18 +1,19 @@
 package com.thompson234.bg95.model;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 public class SearchResult {
 
     private String _query;
-    private List<Map<String, Object>> _airmen = Lists.newArrayList();
-    private List<Map<String, Object>> _aircraft = Lists.newArrayList();
-    private List<Map<String, Object>> _missions = Lists.newArrayList();
 
+    private List<String> _airmenIds = Lists.newArrayList();
+    private List<String> _aircraftIds = Lists.newArrayList();
+    private List<String> _missionIds = Lists.newArrayList();
+    
     public SearchResult() {
     }
 
@@ -33,60 +34,60 @@ public class SearchResult {
         return this;
     }
 
-    public List<Map<String, Object>> getAirmen() {
-        return _airmen;
+    public ImmutableList<String> getAirmenIds() {
+        return ImmutableList.copyOf(_airmenIds);
     }
 
-    public void setAirmen(Collection<Map<String, Object>> airmen) {
-        _airmen.clear();
-        _airmen.addAll(airmen);
+    public void setAirmenIds(Collection<String> airmenIds) {
+        _airmenIds.clear();
+        _airmenIds.addAll(airmenIds);
     }
 
-    public SearchResult airmen(Collection<Map<String, Object>> airmen) {
-        setAirmen(airmen);
+    public SearchResult airmenIds(Collection<String> airmenIds) {
+        setAirmenIds(airmenIds);
         return this;
     }
 
-    public SearchResult airman(Map<String, Object> airman) {
-        _airmen.add(airman);
+    public SearchResult airmanId(String airmanId) {
+        _airmenIds.add(airmanId);
         return this;
     }
 
-    public List<Map<String, Object>> getAircraft() {
-        return _aircraft;
+    public ImmutableList<String> getAircraftIds() {
+        return ImmutableList.copyOf(_aircraftIds);
     }
 
-    public void setAircraft(Collection<Map<String, Object>> aircraft) {
-        _aircraft.clear();
-        _aircraft.addAll(aircraft);
+    public void setAircraftIds(Collection<String> aircraftIds) {
+        _aircraftIds.clear();
+        _aircraftIds.addAll(aircraftIds);
     }
 
-    public SearchResult aircraft(Collection<Map<String, Object>> aircraft) {
-        setAircraft(aircraft);
+    public SearchResult aircraftIds(Collection<String> aircraftIds) {
+        setAircraftIds(aircraftIds);
         return this;
     }
 
-    public SearchResult aircraft(Map<String, Object> aircraft) {
-        _aircraft.add(aircraft);
+    public SearchResult aircraftId(String aircraft) {
+        _aircraftIds.add(aircraft);
         return this;
     }
 
-    public List<Map<String, Object>> getMissions() {
-        return _missions;
+    public ImmutableList<String> getMissionIds() {
+        return ImmutableList.copyOf(_missionIds);
     }
 
-    public void setMissions(Collection<Map<String, Object>> missions) {
-        _missions.clear();
-        _missions.addAll(missions);
+    public void setMissionIds(Collection<String> missions) {
+        _missionIds.clear();
+        _missionIds.addAll(missions);
     }
 
-    public SearchResult missions(Collection<Map<String, Object>> missions) {
-        setMissions(missions);
+    public SearchResult missionIds(Collection<String> missions) {
+        setMissionIds(missions);
         return this;
     }
 
-    public SearchResult mission(Map<String, Object> mission) {
-        _missions.add(mission);
+    public SearchResult missionId(String mission) {
+        _missionIds.add(mission);
         return this;
     }
 }

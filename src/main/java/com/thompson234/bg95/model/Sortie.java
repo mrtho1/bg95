@@ -3,8 +3,10 @@ package com.thompson234.bg95.model;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+import com.thompson234.bg95.json.Views;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonView;
 
 import java.util.Collection;
 import java.util.Set;
@@ -12,17 +14,30 @@ import java.util.Set;
 @JsonAutoDetect
 public class Sortie {
 
+    private String _aircraftId;
     private Aircraft _aircraft;
+
     private Set<CrewAssignment> _crewAssignments = Sets.newHashSet();
 
     public Sortie() {
 
     }
 
+    @JsonView(value = {Views.Storage.class})
+    public String getAircraftId() {
+        return (_aircraft != null) ? _aircraft.getId() : _aircraftId;
+    }
+
+    public void setAircraftId(String aircraftId) {
+        _aircraftId = aircraftId;
+    }
+
+    @JsonView(value = {Views.Detail.class})
     public Aircraft getAircraft() {
         return _aircraft;
     }
 
+    @JsonIgnore
     public void setAircraft(Aircraft aircraft) {
         _aircraft = aircraft;
     }
@@ -32,6 +47,7 @@ public class Sortie {
         return this;
     }
 
+    @JsonView(value = {Views.Storage.class, Views.Detail.class})
     public ImmutableSet<CrewAssignment> getCrewAssignments() {
         return ImmutableSet.copyOf(_crewAssignments);
     }

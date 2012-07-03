@@ -6,139 +6,81 @@ import com.thompson234.bg95.dao.AircraftDao;
 import com.thompson234.bg95.dao.AirmanDao;
 import com.thompson234.bg95.dao.MissionDao;
 import com.thompson234.bg95.guice.Bg95Module;
-import com.thompson234.bg95.model.Aircraft;
-import com.thompson234.bg95.model.Airman;
-import com.thompson234.bg95.model.Mission;
 import com.thompson234.bg95.service.HttpHarvester;
+import com.thompson234.bg95.service.SearchService;
 import com.yammer.dropwizard.config.Configuration;
+import org.apache.lucene.store.Directory;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
-import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 public class Bg95Configuration extends Configuration {
 
-    @NotEmpty
-    @JsonProperty("awsAccessKey")
-    private String _awsAccessKey;
+    @Valid
+    @NotNull
+    @JsonProperty("aws")
+    protected AWSConfiguration _awsConfiguration = new AWSConfiguration();
 
-    @NotEmpty
-    @JsonProperty("awsSecretKey")
-    private String _awsSecretKey;
+    @Valid
+    @NotNull
+    @JsonProperty("contentManager")
+    protected ContentManagerConfiguration _cmConfiguration = new ContentManagerConfiguration();
 
-    @NotEmpty
-    @JsonProperty("localCacheRoot")
-    private String _localCacheRoot;
-
-    @NotEmpty
-    @JsonProperty("s3CacheBucket")
-    private String _s3CacheBucket;
-
-    @JsonProperty("modelCacheName")
-    private String _modelCacheName = "model";
-
-    @JsonProperty("httpCacheName")
-    private String _httpCacheName = "data";
-
-    @JsonProperty("cacheNice")
-    private long _cacheNice = 10 * 1000;
-
-    @JsonProperty("modelDeepWrites")
-    private boolean _modelDeepWrites;
-
-    @JsonProperty("modelPropagateLoadedContent")
-    private boolean _modelPropagateLoadedContent;
-
-    @JsonProperty("httpDeepWrites")
-    private boolean _httpDeepWrites;
-
-    @JsonProperty("httpPropagateLoadedContent")
-    private boolean _httpPropagateLoadedContent;
-
-    @JsonProperty("airmanDomain")
-    private String _airmanDomain = Airman.class.getSimpleName();
-
-    @JsonProperty("aircraftDomain")
-    private String _aircraftDomain = Aircraft.class.getSimpleName();
-
-    @JsonProperty("missionDomain")
-    private String _missionDomain = Mission.class.getSimpleName();
+    @Valid
+    @NotNull
+    @JsonProperty("search")
+    protected SearchConfiguration _searchConfiguration = new SearchConfiguration();
 
     @JsonIgnore
     private Injector _injector;
 
     public Bg95Configuration() {
-        _injector = Guice.createInjector(new Bg95Module(this));
     }
 
-    public String getAwsAccessKey() {
-        return _awsAccessKey;
+    protected synchronized Injector getInjector() {
+
+        if (_injector == null) {
+            _injector = Guice.createInjector(new Bg95Module(this));
+        }
+
+        return _injector;
     }
 
-    public String getAwsSecretKey() {
-        return _awsSecretKey;
+    public AWSConfiguration getAwsConfiguration() {
+        return _awsConfiguration;
     }
 
-    public long getCacheNice() {
-        return _cacheNice;
+    public ContentManagerConfiguration getCmConfiguration() {
+        return _cmConfiguration;
     }
 
-    public String getS3CacheBucket() {
-        return _s3CacheBucket;
-    }
-
-    public String getLocalCacheRoot() {
-        return _localCacheRoot;
-    }
-
-    public String getModelCacheName() {
-        return _modelCacheName;
-    }
-
-    public String getHttpCacheName() {
-        return _httpCacheName;
-    }
-
-    public boolean isModelDeepWrites() {
-        return _modelDeepWrites;
-    }
-
-    public boolean isModelPropagateLoadedContent() {
-        return _modelPropagateLoadedContent;
-    }
-
-    public boolean isHttpDeepWrites() {
-        return _httpDeepWrites;
-    }
-
-    public boolean isHttpPropagateLoadedContent() {
-        return _httpPropagateLoadedContent;
-    }
-
-    public String getAirmanDomain() {
-        return _airmanDomain;
-    }
-
-    public String getAircraftDomain() {
-        return _aircraftDomain;
-    }
-
-    public String getMissionDomain() {
-        return _missionDomain;
+    public SearchConfiguration getSearchConfiguration() {
+        return _searchConfiguration;
     }
 
     public AircraftDao getAircraftDao() {
-        return _injector.getInstance(AircraftDao.class);
+        return getInjector().getInstance(AircraftDao.class);
     }
 
     public AirmanDao getAirmanDao() {
-        return _injector.getInstance(AirmanDao.class);
+        return getInjector().getInstance(AirmanDao.class);
     }
 
     public MissionDao getMissionDao() {
-        return _injector.getInstance(MissionDao.class);
+        return getInjector().getInstance(MissionDao.class);
     }
 
     public HttpHarvester getHttpHarvester() {
-        return _injector.getInstance(HttpHarvester.class);
+        return getInjector().getInstance(HttpHarvester.class);
+    }
+
+    public SearchService getSearchService() {
+        return getInjector().getInstance(SearchService.class);
+    }
+
+    public Directory getDirectory() {
+        return getInjector().getInstance(Directory.class);
     }
 }

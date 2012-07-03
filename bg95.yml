@@ -1,14 +1,24 @@
-awsAccessKey: AKIAILNLXEYMK3N3DJPQ
-awsSecretKey: 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
-s3CacheBucket: bg95.data.thompson234.com
-localCacheRoot: C:\temp\
-modelDeepWrites: true
-modelPropagateLoadedContent: false
-httpDeepWrites: false
-httpPropagateLoadedContent: false
+aws:
+    accessKey: AKIAILNLXEYMK3N3DJPQ
+    secretKey: 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
+    s3bucket: bg95.data.thompson234.com
+
+contentManager:
+    contentRoot: ./temp/cache
+    modelCacheName: model
+    httpCacheName: data
+    modelDeepWrites: true
+    modelPropagateLoadedContent: false
+    httpDeepWrites: false
+    httpPropagateLoadedContent: false
+
+search:
+    indexDir: ./temp/index
 
 http:
     rootPath: /api/*
+    port: 8080
+    adminPort: 8080
 
 # Logging settings.
 logging:

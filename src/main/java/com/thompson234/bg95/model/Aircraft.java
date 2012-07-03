@@ -5,12 +5,13 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.thompson234.bg95.json.Views;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonView;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @JsonAutoDetect
@@ -27,6 +28,12 @@ public class Aircraft extends AbstractModel<Aircraft> implements Comparable<Airc
         super(newId());
     }
 
+    @JsonView(value = {Views.Summary.class})
+    public String getLabel() {
+        return getNumber();
+    }
+
+    @JsonView(value = {Views.Summary.class, Views.Storage.class, Views.Detail.class})
     public String getNumber() {
         return _number;
     }
@@ -40,6 +47,7 @@ public class Aircraft extends AbstractModel<Aircraft> implements Comparable<Airc
         return this;
     }
 
+    @JsonView(value = {Views.Summary.class, Views.Storage.class, Views.Detail.class})
     public ImmutableList<String> getNames() {
         return ImmutableList.copyOf(_names);
     }
@@ -59,6 +67,7 @@ public class Aircraft extends AbstractModel<Aircraft> implements Comparable<Airc
         return this;
     }
 
+    @JsonView(value = {Views.Storage.class, Views.Detail.class})
     public ImmutableSet<String> getSquadrons() {
         return ImmutableSet.copyOf(_squadrons);
     }
@@ -78,6 +87,7 @@ public class Aircraft extends AbstractModel<Aircraft> implements Comparable<Airc
         return this;
     }
 
+    @JsonView(value = {Views.Storage.class, Views.Detail.class})
     public ImmutableSet<String> getCallsigns() {
         return ImmutableSet.copyOf(_callsigns);
     }
@@ -97,6 +107,7 @@ public class Aircraft extends AbstractModel<Aircraft> implements Comparable<Airc
         return this;
     }
 
+    @JsonView(value = {Views.Storage.class, Views.Detail.class})
     public String getModel() {
         return _model;
     }
@@ -115,6 +126,7 @@ public class Aircraft extends AbstractModel<Aircraft> implements Comparable<Airc
         return !_names.isEmpty();
     }
 
+    @JsonView(value = {Views.Storage.class, Views.Detail.class})
     public ImmutableSet<String> getImageUrls() {
         return ImmutableSet.copyOf(_imageUrls);
     }
@@ -168,14 +180,5 @@ public class Aircraft extends AbstractModel<Aircraft> implements Comparable<Airc
         sanitizeStrings(_callsigns);
         sanitizeStrings(_squadrons);
         sanitizeStrings(_imageUrls);
-    }
-
-    @Override
-    public Map<String, Object> summarize() {
-        final Map<String, Object> summary = super.summarize();
-        summary.put("label", getNumber());
-        summary.put("names", getNames());
-
-        return summary;
     }
 }

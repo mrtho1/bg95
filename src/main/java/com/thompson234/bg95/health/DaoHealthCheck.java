@@ -1,5 +1,6 @@
 package com.thompson234.bg95.health;
 
+import com.google.common.collect.Collections2;
 import com.thompson234.bg95.dao.AircraftDao;
 import com.thompson234.bg95.dao.AirmanDao;
 import com.thompson234.bg95.dao.MissionDao;
@@ -39,6 +40,6 @@ public class DaoHealthCheck extends HealthCheck {
             return Result.unhealthy("No missions");
         }
 
-        return Result.healthy();
+        return Result.healthy(String.format("%d Airmen; %d Aircraft; %d Missions", airmen.size(), aircraft.size(), missions.size()));
     }
 }

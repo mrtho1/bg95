@@ -15,7 +15,7 @@ import java.util.List;
 public class CmAircraftDaoImpl extends AbstractCmModelDao<Aircraft> implements AircraftDao {
 
     @Inject
-    public CmAircraftDaoImpl(@Named("modelContentManager") ContentManagerRW contentManager,
+    public CmAircraftDaoImpl(@Named("contentManager.modelContentManager") ContentManagerRW contentManager,
                              ObjectMapper objectMapper) {
         super(contentManager, objectMapper);
     }

@@ -5,10 +5,11 @@ import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+import com.thompson234.bg95.json.Views;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.map.annotate.JsonView;
 
 import java.util.Date;
-import java.util.Map;
 import java.util.Set;
 
 @JsonAutoDetect
@@ -35,6 +36,12 @@ public class Mission extends AbstractModel<Mission> implements Comparable<Missio
         super(newId());
     }
 
+    @JsonView(value = {Views.Summary.class})
+    public String getLabel() {
+        return getDestination();
+    }
+
+    @JsonView(value = {Views.Summary.class, Views.Storage.class, Views.Detail.class})
     public int getNumber() {
         return _number;
     }
@@ -48,6 +55,7 @@ public class Mission extends AbstractModel<Mission> implements Comparable<Missio
         return this;
     }
 
+    @JsonView(value = {Views.Summary.class, Views.Storage.class, Views.Detail.class})
     public Date getDate() {
         return _date;
     }
@@ -61,6 +69,7 @@ public class Mission extends AbstractModel<Mission> implements Comparable<Missio
         return this;
     }
 
+    @JsonView(value = {Views.Summary.class, Views.Storage.class, Views.Detail.class})
     public String getDestination() {
         return _destination;
     }
@@ -74,6 +83,7 @@ public class Mission extends AbstractModel<Mission> implements Comparable<Missio
         return this;
     }
 
+    @JsonView(value = {Views.Summary.class, Views.Storage.class, Views.Detail.class})
     public int getTookOff() {
         return _tookOff;
     }
@@ -87,6 +97,7 @@ public class Mission extends AbstractModel<Mission> implements Comparable<Missio
         return this;
     }
 
+    @JsonView(value = {Views.Summary.class, Views.Storage.class, Views.Detail.class})
     public int getCompleted() {
         return _completed;
     }
@@ -100,6 +111,7 @@ public class Mission extends AbstractModel<Mission> implements Comparable<Missio
         return this;
     }
 
+    @JsonView(value = {Views.Summary.class, Views.Storage.class, Views.Detail.class})
     public int getDamaged() {
         return _damaged;
     }
@@ -113,6 +125,7 @@ public class Mission extends AbstractModel<Mission> implements Comparable<Missio
         return this;
     }
 
+    @JsonView(value = {Views.Summary.class, Views.Storage.class, Views.Detail.class})
     public int getLost() {
         return _lost;
     }
@@ -126,6 +139,7 @@ public class Mission extends AbstractModel<Mission> implements Comparable<Missio
         return this;
     }
 
+    @JsonView(value = {Views.Summary.class, Views.Storage.class, Views.Detail.class})
     public int getSalvaged() {
         return _salvaged;
     }
@@ -139,6 +153,7 @@ public class Mission extends AbstractModel<Mission> implements Comparable<Missio
         return this;
     }
 
+    @JsonView(value = {Views.Storage.class, Views.Detail.class})
     public ImmutableSet<Sortie> getSorties() {
         return ImmutableSet.copyOf(_sorties);
     }
@@ -158,7 +173,27 @@ public class Mission extends AbstractModel<Mission> implements Comparable<Missio
         return this;
     }
 
-    public Sortie getSortieByNumber(String aircraftNumber) {
+    @JsonView(value = {Views.Summary.class})
+    public int getSortieCount() {
+        return _sorties.size();
+    }
+
+    public Sortie getSortieByAirmanId(String airmanId) {
+
+        for (Sortie sortie : getSorties()) {
+
+            for (CrewAssignment ca: sortie.getCrewAssignments()) {
+
+                if (ca.getAirman().getId().equals(airmanId)) {
+                    return sortie;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public Sortie getSortieByAircraftNumber(String aircraftNumber) {
 
         for (Sortie sortie : getSorties()) {
 
@@ -170,7 +205,7 @@ public class Mission extends AbstractModel<Mission> implements Comparable<Missio
         return null;
     }
 
-    public Sortie getSortieById(String aircraftId) {
+    public Sortie getSortieByAircraftId(String aircraftId) {
 
         for (Sortie sortie : getSorties()) {
 
@@ -249,21 +284,5 @@ public class Mission extends AbstractModel<Mission> implements Comparable<Missio
         } else {
             return 1;
         }
-    }
-
-    @Override
-    public Map<String, Object> summarize() {
-        final Map<String, Object> summary = super.summarize();
-        summary.put("label", getDestination());
-        summary.put("number", getNumber());
-        summary.put("date", getDate());
-        summary.put("tookOff", getTookOff());
-        summary.put("completed", getCompleted());
-        summary.put("damaged", getDamaged());
-        summary.put("lost", getLost());
-        summary.put("salvaged", getSalvaged());
-        summary.put("sortieCount", getSorties().size());
-
-        return summary;
     }
 }

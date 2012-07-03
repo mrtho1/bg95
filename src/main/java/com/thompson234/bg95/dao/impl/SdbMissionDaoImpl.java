@@ -53,9 +53,9 @@ public class SdbMissionDaoImpl extends AbstractSdbModelDao<Mission> implements M
 
     @Inject
     public SdbMissionDaoImpl(AmazonSimpleDBClient client,
-                             @Named("domain.mission.name") String domainName,
-                             @Named("domain.mission.forceReset") boolean forceReset,
-                             @Named("domain.mission.preCache") boolean preCache,
+                             @Named("aws.missionDomain") String domainName,
+                             @Named("aws.forceMissionDomainReset") boolean forceReset,
+                             @Named("dao.missionDomainPreCache") boolean preCache,
                              AirmanDao airmanDao,
                              AircraftDao aircraftDao) {
         super(client, domainName, forceReset);
@@ -121,7 +121,7 @@ public class SdbMissionDaoImpl extends AbstractSdbModelDao<Mission> implements M
             Sortie sortie = null;
 
             if (parts.length > 1) {
-                sortie = mission.getSortieById(parts[1]);
+                sortie = mission.getSortieByAircraftId(parts[1]);
 
                 if (sortie == null) {
                     sortie = new Sortie();

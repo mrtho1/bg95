@@ -1,21 +1,17 @@
 package com.thompson234.bg95.model;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.Maps;
+import com.thompson234.bg95.json.Views;
+import org.codehaus.jackson.map.annotate.JsonView;
 
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.UUID;
 
 public abstract class AbstractModel<T extends Model> implements Model {
 
-    protected static final String ID_SUMMARY = "id";
-    protected static final String TYPE_SUMMARY = "type";
-
     private boolean _idFrozen = false;
     private String _id;
-    private T _summary;
 
     public AbstractModel() {
     }
@@ -29,6 +25,7 @@ public abstract class AbstractModel<T extends Model> implements Model {
     }
 
     @Override
+    @JsonView(value = {Views.Base.class})
     public String getId() {
         return _id;
     }
@@ -52,6 +49,12 @@ public abstract class AbstractModel<T extends Model> implements Model {
     public T id(String id) {
         setId(id);
         return (T) this;
+    }
+
+    @Override
+    @JsonView(value = {Views.Summary.class})
+    public String getType() {
+        return getClass().getSimpleName().toLowerCase();
     }
 
     @Override
@@ -84,14 +87,5 @@ public abstract class AbstractModel<T extends Model> implements Model {
     }
 
     public void sanitize() {
-    }
-
-    @Override
-    public Map<String, Object> summarize() {
-        final Map<String, Object> summary = Maps.newHashMap();
-        summary.put(ID_SUMMARY, getId());
-        summary.put(TYPE_SUMMARY, getClass().getSimpleName().toLowerCase());
-
-        return summary;
     }
 }

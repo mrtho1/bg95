@@ -74,7 +74,7 @@ public class HttpHarvester {
     private Multimap<String, String> _aircraftImageUrlMap = HashMultimap.create();
 
     @Inject
-    public HttpHarvester(@Named("httpContentContentManager") ContentManager httpContentManager,
+    public HttpHarvester(@Named("contentManager.httpContentContentManager") ContentManager httpContentManager,
                          AircraftDao aircraftDao,
                          AirmanDao airmanDao,
                          MissionDao missionDao) {
@@ -408,7 +408,7 @@ public class HttpHarvester {
                 continue;
             }
 
-            Sortie sortie = mission.getSortieByNumber(aircraft.getNumber());
+            Sortie sortie = mission.getSortieByAircraftNumber(aircraft.getNumber());
 
             if (sortie == null) {
                 sortie = new Sortie().aircraft(aircraft);

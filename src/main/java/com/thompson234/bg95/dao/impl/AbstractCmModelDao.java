@@ -7,8 +7,10 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.thompson234.bg95.content.ContentManagerRW;
 import com.thompson234.bg95.model.Model;
+import com.thompson234.bg95.json.Views;
 import com.yammer.dropwizard.logging.Log;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.ObjectWriter;
 import org.codehaus.jackson.map.type.CollectionType;
 
 import javax.annotation.PostConstruct;
@@ -22,10 +24,10 @@ import java.util.Map;
 public abstract class AbstractCmModelDao<T extends Model> extends AbstractModelDao<T> {
     private static final Log _sLog = Log.forClass(AbstractCmModelDao.class);
 
-    private ContentManagerRW _contentManager;
-    private ObjectMapper _objectMapper;
+    private final ContentManagerRW _contentManager;
+    private final ObjectMapper _objectMapper;
 
-    private Cache<String, T> _objectCache = CacheBuilder.newBuilder().build();
+    private final Cache<String, T> _objectCache = CacheBuilder.newBuilder().build();
 
     public AbstractCmModelDao(ContentManagerRW contentManager,
                               ObjectMapper mapper) {
@@ -75,7 +77,8 @@ public abstract class AbstractCmModelDao<T extends Model> extends AbstractModelD
 
     protected void storeModels() {
         try {
-            final byte[] jsonContent = _objectMapper.writeValueAsBytes(findAll());
+            final ObjectWriter writer = _objectMapper.writerWithView(Views.Storage.class);
+            final byte[] jsonContent = writer.writeValueAsBytes(findAll());
             final Map<String, String> meta = Maps.newHashMap();
             meta.put(ContentManagerRW.META_CONTENT_TYPE, "application/json");
             meta.put(ContentManagerRW.META_LENGTH, "" + jsonContent.length);
@@ -115,6 +118,7 @@ public abstract class AbstractCmModelDao<T extends Model> extends AbstractModelD
     @Override
     protected void doSaveAll(Collection<T> all) {
         for (T model : all) {
+            model.sanitize();
             cacheObject(model);
         }
 

@@ -34,9 +34,9 @@ public class SdbAircraftDaoImpl extends AbstractSdbModelDao<Aircraft> implements
 
     @Inject
     public SdbAircraftDaoImpl(AmazonSimpleDBClient client,
-                              @Named("domain.aircraft.name") String domainName,
-                              @Named("domain.aircraft.forceReset") boolean forceReset,
-                              @Named("domain.mission.preCache") boolean preCache) {
+                              @Named("aws.aircraftDomain") String domainName,
+                              @Named("aws.forceAircraftDomainReset") boolean forceReset,
+                              @Named("dao.aircraftDomainPreCache") boolean preCache) {
         super(client, domainName, forceReset);
 
         if (preCache) {

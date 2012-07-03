@@ -26,15 +26,10 @@ public class AircraftResource {
     }
 
     @GET
-    public Collection<Map<String, Object>> list() {
+    @Produces("text/x-json")
+    public List<Aircraft> list() {
 
-        List<Aircraft> all = _aircraftDao.findAll();
-        return Lists.transform(_aircraftDao.findAll(), new Function<Aircraft, Map<String, Object>>() {
-            @Override
-            public Map<String, Object> apply(@Nullable Aircraft input) {
-                return input.summarize();
-            }
-        });
+        return _aircraftDao.findAll();
     }
 
     @GET

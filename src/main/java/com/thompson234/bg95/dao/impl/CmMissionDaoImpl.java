@@ -2,6 +2,8 @@ package com.thompson234.bg95.dao.impl;
 
 import com.google.common.base.Predicate;
 import com.thompson234.bg95.content.ContentManagerRW;
+import com.thompson234.bg95.dao.AircraftDao;
+import com.thompson234.bg95.dao.AirmanDao;
 import com.thompson234.bg95.dao.MissionDao;
 import com.thompson234.bg95.model.Aircraft;
 import com.thompson234.bg95.model.Airman;
@@ -20,10 +22,32 @@ import java.util.List;
 public class CmMissionDaoImpl extends AbstractCmModelDao<Mission> implements MissionDao {
     private static final Log _sLog = Log.forClass(CmMissionDaoImpl.class);
 
+    private final AirmanDao _airmanDao;
+    private final AircraftDao _aircraftDao;
+
     @Inject
-    public CmMissionDaoImpl(@Named("modelContentManager") ContentManagerRW contentManager,
-                            ObjectMapper objectMapper) {
+    public CmMissionDaoImpl(@Named("contentManager.modelContentManager") ContentManagerRW contentManager,
+                            ObjectMapper objectMapper,
+                            AirmanDao airmanDao,
+                            AircraftDao aircraftDao) {
+
         super(contentManager, objectMapper);
+        _airmanDao = airmanDao;
+        _aircraftDao = aircraftDao;
+
+        //should already be loaded.
+        final List<Mission> all = findAll();
+        for (Mission mission: all) {
+            for (Sortie sortie: mission.getSorties()) {
+                final Aircraft aircraft = _aircraftDao.findById(sortie.getAircraftId());
+                sortie.setAircraft(aircraft);
+
+                for (CrewAssignment ca: sortie.getCrewAssignments()) {
+                    final Airman airman = _airmanDao.findById(ca.getAirmanId());
+                    ca.setAirman(airman);
+                }
+            }
+        }
     }
 
     protected Class<Mission> getModelClass() {

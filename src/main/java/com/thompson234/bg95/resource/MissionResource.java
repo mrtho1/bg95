@@ -12,6 +12,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 @Path("/mission")
@@ -25,14 +26,10 @@ public class MissionResource {
     }
 
     @GET
-    public Collection<Map<String, Object>> list() {
+    @Produces("text/x-json")
+    public List<Mission> list() {
 
-        return Lists.transform(_missionDao.findAll(), new Function<Mission, Map<String, Object>>() {
-            @Override
-            public Map<String, Object> apply(@Nullable Mission input) {
-                return input.summarize();
-            }
-        });
+        return _missionDao.findAll();
     }
 
     @GET

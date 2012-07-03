@@ -10,8 +10,10 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 @Path("/airman")
@@ -25,14 +27,10 @@ public class AirmanResource {
     }
 
     @GET
-    public Collection<Map<String, Object>> list() {
+    @Produces("text/x-json")
+    public List<Airman> list() {
 
-        return Lists.transform(_airmanDao.findAll(), new Function<Airman, Map<String, Object>>() {
-            @Override
-            public Map<String, Object> apply(@Nullable Airman input) {
-                return input.summarize();
-            }
-        });
+        return _airmanDao.findAll();
     }
 
     @GET
